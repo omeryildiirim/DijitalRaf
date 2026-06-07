@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/open-book.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DijitalRaf | Kiralama Masası</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #faf7f0;
+            --wood-dark: #3e2723;
+            --wood-light: #5d4037;
+            --text-main: #2c1e1a;
+            --accent: #ffb300;
+            --white: #ffffff;
+            --success: #2e7d32;
+            --danger: #c62828;
+            --info-blue: #1976d2; 
+            --shadow: 0 10px 30px rgba(62, 39, 35, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body { 
+            font-family: 'Lato', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--wood-dark); }
+        
+        header { 
+            background: rgba(250, 247, 240, 0.95); 
+            padding: 20px 5%; 
+            border-bottom: 1px solid rgba(62, 39, 35, 0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-link { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            color: var(--wood-dark); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            transition: 0.3s;
+            background: #fff;
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid #eee;
+        }
+        .logo-link:hover { background: var(--wood-dark); color: #fff; }
+
+        .checkout-wrapper {
+            max-width: 1100px; 
+            margin: 40px auto; 
+            padding: 0 20px;
+            display: flex; 
+            gap: 40px; 
+            align-items: flex-start;
+        }
+
+        .summary-card {
+            flex: 1;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            position: sticky; 
+            top: 100px;
+            border-top: 6px solid var(--wood-dark);
+        }
+
+        .summary-header { 
+            text-align: center; 
+            border-bottom: 2px dashed #eee; 
+            padding-bottom: 25px; 
+            margin-bottom: 25px; 
+        }
+
+        .book-cover-preview { 
+            width: 140px; 
+            height: 210px;
+            object-fit: cover;
+            border-radius: 6px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            margin-bottom: 20px; 
+            transform: rotate(-2deg);
+            border: 4px solid #fff;
+        }
+
+        .summary-list { list-style: none; }
+        
+        .summary-item { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 15px; 
+            font-size: 0.95rem; 
+            color: var(--text-main);
+        }
+
+        .summary-item span:first-child { color: #888; }
+        .summary-item span:last-child { font-weight: 700; color: var(--wood-dark); }
+
+        .total-price {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--wood-dark);
+        }
+
+        .form-card {
+            flex: 1.8;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title { 
+            margin-bottom: 30px; 
+            font-size: 1.8rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        
+        .form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .form-group { flex: 1; margin-bottom: 20px; }
+        
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            color: var(--wood-dark); 
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #f0f0f0; 
+            border-radius: 8px; 
+            font-family: inherit; 
+            font-size: 1rem;
+            transition: 0.3s;
+            background: #fafafa;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus,
+        .form-group select:focus { 
+            border-color: var(--accent); 
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.1);
+        }
+
+        .confirm-btn {
+            width: 100%; 
+            background: var(--wood-dark); 
+            color: #fff; 
+            border: none; 
+            padding: 20px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(62, 39, 35, 0.2);
+        }
+        .confirm-btn:hover { 
+            background: var(--accent); 
+            color: var(--wood-dark);
+            transform: translateY(-3px); 
+        }
+
+        .confirm-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-box {
+            background-color: #fff8e1;
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            display: flex; gap: 15px; align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .error-box {
+            background-color: #ffebee;
+            border-left: 5px solid var(--danger);
+            padding: 20px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            display: flex; gap: 15px; align-items: center;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(62, 39, 35, 0.7);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        
+        .contract-modal-box {
+            background: #fff;
+            width: 600px;
+            max-height: 80vh;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .success-card {
+            background: #fff;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            width: 400px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-icon {
+            width: 80px; height: 80px; background: var(--success); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin: 0 auto 20px auto;
+        }
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; 
+            font-size: 1.5rem; cursor: pointer; color: #999;
+        }
+        .close-modal-btn:hover { color: var(--danger); }
+
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        @media (max-width: 850px) { 
+            .checkout-wrapper { flex-direction: column; } 
+            .summary-card { position: relative; top: 0; width: 100%; order: -1; } 
+            .form-row { flex-direction: column; gap: 0; }
+            .contract-modal-box { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo-link">
+            <i class="fas fa-arrow-left"></i> Kütüphaneye Dön
+        </a>
+        <div style="color: var(--text-main); font-size: 0.9rem; font-weight: bold;">
+            <i class="fas fa-lock" style="color: var(--success);"></i> Güvenli Kiralama
+        </div>
+    </header>
+
+    <div class="checkout-wrapper">
+        
+        <div class="summary-card" id="summaryCard">
+            <div style="text-align: center; padding: 20px;">Kitap bilgisi yükleniyor...</div>
+        </div>
+
+        <div class="form-card">
+            
+            <div class="info-box" id="deliveryInfoBox">
+                <i class="fas fa-box-open" style="color: var(--accent); font-size: 1.5rem;"></i>
+                <div>
+                    <strong id="infoTitle">Standart Teslimat</strong>
+                    <p id="infoDesc" style="margin-top: 5px; color: #555;">Kitabınız sterilize edilmiş kutusunda, 3 iş günü içinde teslim edilir.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Teslimat Bilgileri</h2>
+            
+            <form id="rentalForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Adınız</label>
+                        <input type="text" id="firstName" required placeholder="Adınızı Giriniz">
+                    </div>
+                    <div class="form-group">
+                        <label>Soyadınız</label>
+                        <input type="text" id="lastName" required placeholder="Soyadınızı Giriniz">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-Posta Adresi</label>
+                        <input type="email" id="email" required placeholder="E-postanızı Giriniz">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="tel" id="phone" required placeholder="0 (___) ___ __ __">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Teslimat Adresi</label>
+                    <textarea id="address" rows="3" required placeholder="Mahalle, Sokak, Kapı No, İlçe/İl..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Kargo Seçeneği</label>
+                    <select id="cargoSelect" onchange="updateCheckoutState()">
+                        <option value="15">Standart Kargo (15.00 TL) - 3 Gün</option>
+                        <option value="30">Hızlı Kargo (30.00 TL) - 1 Gün</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                    <input type="checkbox" required id="agree" style="width: 20px; height: 20px; accent-color: var(--accent);">
+                    <label for="agree" style="margin:0; font-weight: normal; cursor: pointer; font-size: 0.9rem;">
+                        <a href="#" onclick="openContractModal(event)" style="color: var(--text-main); text-decoration: underline; font-weight: bold;">Mesafeli satış sözleşmesini</a> okudum ve onaylıyorum.
+                    </label>
+                </div>
+
+                <button type="submit" class="confirm-btn" id="submitBtn">
+                    Kiralama İşlemini Tamamla <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="contractModal">
+        <div class="contract-modal-box">
+            <span class="close-modal-btn" onclick="closeContractModal()">&times;</span>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Mesafeli Satış Sözleşmesi</h3>
+            <div style="font-size: 0.9rem; line-height: 1.6; color: #444;">
+                <p><strong>MADDE 1 - TARAFLAR</strong></p>
+                <p>İşbu sözleşme DijitalRaf Kütüphane Hizmetleri (Satıcı) ile hizmeti alan kişi (Alıcı) arasında düzenlenmiştir.</p>
+                <br>
+                <p><strong>MADDE 2 - KONU</strong></p>
+                <p>İşbu sözleşmenin konusu, Alıcı'nın Satıcı'ya ait internet sitesinden elektronik ortamda siparişini yaptığı kitap kiralama hizmetinin satışı ve teslimi ile ilgili olarak 6502 sayılı Tüketicinin Korunması Hakkında Kanun hükümleri gereğince tarafların hak ve yükümlülüklerinin saptanmasıdır.</p>
+                <br>
+                <p><strong>MADDE 3 - KİRALAMA SÜRESİ VE İADE</strong></p>
+                <p>Kiralama süresi kitap teslim alındığı andan itibaren 15 gündür. Alıcı, kitabı hasarsız bir şekilde, belirtilen süre sonunda kargo ile geri göndermeyi taahhüt eder. Gecikme durumunda günlük ceza bedeli uygulanabilir.</p>
+                <br>
+                <p><strong>MADDE 4 - CAYMA HAKKI</strong></p>
+                <p>Hizmet ifasına başlandıktan sonra (kitap kargoya verildikten sonra) cayma hakkı kullanılamaz. Ancak kitap hasarlı ulaşırsa değişim talep edilebilir.</p>
+                <br>
+            </div>
+            <button onclick="closeContractModal()" class="confirm-btn" style="padding: 10px; margin-top: 20px; font-size: 0.9rem;">Okudum, Anladım</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal" style="z-index: 2100;">
+        <div class="success-card">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h2 style="margin-bottom: 10px;">İşlem Başarılı!</h2>
+            <p style="color: #666;">Siparişiniz alındı. Kütüphane envanteri güncelleniyor...</p>
+            <p style="margin-top: 20px; font-weight: bold; color: var(--wood-dark);">Ana Sayfaya Yönlendiriliyorsunuz...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="errorModal" style="z-index: 2100;">
+        <div class="success-card">
+            <div class="success-icon" style="background: var(--danger);"><i class="fas fa-times"></i></div>
+            <h2 style="margin-bottom: 10px;">Hata Oluştu!</h2>
+            <p id="errorMessage" style="color: #666;">Kiralama işlemi sırasında bir hata oluştu.</p>
+            <button onclick="closeErrorModal()" class="confirm-btn" style="margin-top: 20px; padding: 10px 20px;">Tamam</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedBook = null;
+        const params = new URLSearchParams(window.location.search);
+        const bookId = parseInt(params.get('id'));
+        const summaryContainer = document.getElementById('summaryCard');
+        const submitBtn = document.getElementById('submitBtn');
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadBookData();
+        });
+
+        async function loadBookData() {
+            try {
+                const response = await fetch('api/books.php');
+                const books = await response.json();
+                
+                selectedBook = books.find(b => b.id === bookId);
+                
+                if (selectedBook) {
+                    if (selectedBook.stok <= 0) {
+                        showBookUnavailable();
+                    } else {
+                        renderSummary(15); 
+                    }
+                } else {
+                    showBookNotFound();
+                }
+            } catch (error) {
+                console.error('Kitap bilgisi yüklenirken hata:', error);
+                showBookNotFound();
+            }
+        }
+
+        async function submitRental(rentalData) {
+            try {
+                const response = await fetch('api/rent.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(rentalData)
+                });
+                
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Kiralama işlemi hatası:', error);
+                return { success: false, message: 'Sunucu hatası: ' + error.message };
+            }
+        }
+
+        
+        function showBookUnavailable() {
+            document.querySelector('.form-card').style.display = 'none';
+            summaryContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-times-circle" style="font-size: 3rem; color: var(--danger); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--danger);">Kitap Müsait Değil</h3>
+                    <p style="color: #666; margin: 10px 0;">Bu kitap şu anda başka bir okuyucuda.</p>
+                    <a href="index.html" class="confirm-btn" style="text-decoration: none; display: inline-block; padding: 10px 20px; margin-top: 20px;">
+                        Başka Kitaplara Göz At
+                    </a>
+                </div>
+            `;
+        }
+
+        function showBookNotFound() {
+            document.querySelector('.form-card').style.display = 'none';
+            summaryContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-search" style="font-size: 3rem; color: #999; margin-bottom: 20px;"></i>
+                    <h3>Kitap Bulunamadı</h3>
+                    <p style="color: #666; margin: 10px 0;">Aradığınız kitap kütüphanemizde mevcut değil.</p>
+                    <a href="index.html" class="confirm-btn" style="text-decoration: none; display: inline-block; padding: 10px 20px; margin-top: 20px;">
+                        Kütüphaneye Dön
+                    </a>
+                </div>
+            `;
+        }
+
+        function renderSummary(cargoPrice) {
+            const total = parseFloat(cargoPrice).toFixed(2);
+            
+            summaryContainer.innerHTML = `
+                <div class="summary-header">
+                    <img src="${selectedBook.kapak_resmi}" class="book-cover-preview" alt="${selectedBook.baslik}">
+                    <h3>${selectedBook.baslik}</h3>
+                    <p style="color: var(--wood-light); font-style: italic;">${selectedBook.yazar}</p>
+                </div>
+                
+                <ul class="summary-list">
+                    <li class="summary-item">
+                        <span>Kategori</span>
+                        <span>${selectedBook.kategori}</span>
+                    </li>
+                    <li class="summary-item">
+                        <span>Kiralama Süresi</span>
+                        <span>15 Gün</span>
+                    </li>
+                    <li class="summary-item">
+                        <span>Kitap Bedeli</span>
+                        <span>Ücretsiz</span>
+                    </li>
+                    <li class="summary-item">
+                        <span>Kargo Ücreti</span>
+                        <span id="cargoDisplay">${cargoPrice > 0 ? cargoPrice + '.00 TL' : 'Ücretsiz'}</span>
+                    </li>
+                </ul>
+
+                <div class="total-price">
+                    <span>Toplam Tutar</span>
+                    <span id="totalDisplay" style="color: var(--accent);">${total} TL</span>
+                </div>
+            `;
+        }
+
+        function updateCheckoutState() {
+            const select = document.getElementById('cargoSelect');
+            const price = parseInt(select.value);
+            
+            renderSummary(price);
+
+            const infoBox = document.getElementById('deliveryInfoBox');
+            const infoTitle = document.getElementById('infoTitle');
+            const infoDesc = document.getElementById('infoDesc');
+            const infoIcon = infoBox.querySelector('i');
+
+            if (price === 15) {
+                infoBox.style.backgroundColor = '#fff8e1';
+                infoBox.style.borderLeftColor = 'var(--accent)';
+                infoIcon.className = 'fas fa-box-open';
+                infoIcon.style.color = 'var(--accent)';
+                infoTitle.innerText = 'Standart Teslimat';
+                infoDesc.innerText = 'Kitabınız sterilize edilmiş kutusunda, 3 iş günü içinde teslim edilir.';
+            } else {
+                infoBox.style.backgroundColor = '#e3f2fd';
+                infoBox.style.borderLeftColor = 'var(--info-blue)';
+                infoIcon.className = 'fas fa-rocket';
+                infoIcon.style.color = 'var(--info-blue)';
+                infoTitle.innerText = 'Hızlı Teslimat (Express)';
+                infoDesc.innerText = 'Siparişiniz öncelikli hazırlanır ve 24 saat içinde adresinize ulaştırılır.';
+            }
+        }
+
+        document.getElementById('rentalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!selectedBook) {
+                showError('Kitap bilgisi bulunamadı.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> İşleniyor...';
+
+            const rentalData = {
+                kitap_id: selectedBook.id,
+                ad: document.getElementById('firstName').value,
+                soyad: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                telefon: document.getElementById('phone').value,
+                adres: document.getElementById('address').value,
+                kargo_ucreti: parseInt(document.getElementById('cargoSelect').value),
+                kargo_tipi: document.getElementById('cargoSelect').selectedIndex === 0 ? 'standart' : 'hizli'
+            };
+
+            try {
+                const result = await submitRental(rentalData);
+
+console.log("API Yanıtı:", result);
+
+if (result.success) {
+    showSuccessModal();
+} else {
+    const debugInfo = result.debug ? ` (Debug: ${JSON.stringify(result.debug)})` : '';
+    showError(result.message + debugInfo || 'Kiralama işlemi başarısız oldu.');
+}
+            } catch (error) {
+                showError('Bir hata oluştu: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Kiralama İşlemini Tamamla <i class="fas fa-arrow-right"></i>';
+            }
+        });
+
+        
+        function openContractModal(e) {
+            e.preventDefault();
+            document.getElementById('contractModal').style.display = 'flex';
+        }
+
+        function closeContractModal() {
+            document.getElementById('contractModal').style.display = 'none';
+        }
+
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 3000);
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').style.display = 'flex';
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const contractModal = document.getElementById('contractModal');
+            const errorModal = document.getElementById('errorModal');
+            
+            if (event.target == contractModal) {
+                contractModal.style.display = "none";
+            }
+            if (event.target == errorModal) {
+                errorModal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

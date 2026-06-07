@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DijitalRaf | Kişisel Alan</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #faf7f0;
+            --wood-dark: #3e2723;
+            --wood-light: #5d4037;
+            --text-main: #2c1e1a;
+            --text-muted: #795548;
+            --accent: #ffb300;
+            --success: #2e7d32;
+            --danger: #c62828;
+            --shadow-soft: 0 10px 30px rgba(62, 39, 35, 0.1);
+            --shadow-hard: 0 10px 20px rgba(62, 39, 35, 0.25);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--wood-dark); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; cursor: pointer; }
+        ul { list-style: none; }
+
+        .btn {
+            padding: 10px 24px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            border: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background-color: var(--wood-dark); color: #fff; }
+        .btn-primary:hover { background-color: var(--wood-light); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--wood-dark); color: var(--wood-dark); }
+        .btn-outline:hover { background: var(--wood-dark); color: #fff; }
+        .btn-accent { background-color: var(--accent); color: var(--wood-dark); }
+        .btn-accent:hover { background-color: #ffca28; }
+
+        header {
+            background: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(62, 39, 35, 0.1); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; gap: 10px; display: flex; align-items: center; }
+        
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .icon-btn { 
+            background: none; border: none; font-size: 1.2rem; color: var(--wood-dark); 
+            position: relative; transition: 0.3s; padding: 8px; border-radius: 50%;
+        }
+        .icon-btn:hover { 
+            color: var(--accent); background: rgba(255, 179, 0, 0.1);
+        }
+        .badge-dot { 
+            position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; 
+            background: var(--danger); border-radius: 50%; 
+        }
+        .user-greeting {
+            color: var(--wood-dark); font-weight: 600; font-size: 0.9rem;
+            padding: 5px 10px; background: rgba(255, 179, 0, 0.1); border-radius: 15px;
+        }
+
+        .profile-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 5%; }
+
+        .user-card {
+            background: #fff; padding: 40px; border-radius: 12px; box-shadow: var(--shadow-soft);
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px;
+            border-left: 6px solid var(--wood-dark); transition: all 0.3s ease;
+        }
+        .user-card:hover {
+            box-shadow: var(--shadow-hard);
+            transform: translateY(-5px);
+        }
+        
+        .user-main { display: flex; align-items: center; gap: 25px; }
+        .avatar-circle {
+            width: 100px; height: 100px; background: var(--wood-dark); color: #fff; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-family: 'Playfair Display', serif;
+            border: 4px solid #f0eadd; box-shadow: var(--shadow-soft);
+        }
+        .user-details h2 { margin-bottom: 8px; font-size: 2rem; }
+        .user-details p { color: var(--text-muted); font-size: 1rem; margin-bottom: 12px; }
+        .edit-profile-link { 
+            color: var(--wood-light); font-size: 0.9rem; cursor: pointer; 
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .edit-profile-link:hover { color: var(--accent); }
+
+        .wallet-box {
+            background: var(--bg-color); padding: 20px 30px; border-radius: 10px; text-align: right; 
+            border: 1px solid rgba(62, 39, 35, 0.1); box-shadow: var(--shadow-soft);
+        }
+        .wallet-label { font-size: 0.9rem; color: var(--text-muted); display: block; }
+        .wallet-amount { font-size: 1.8rem; font-weight: 700; color: var(--wood-dark); display: block; margin: 8px 0; }
+        .add-funds-btn { 
+            font-size: 0.9rem; color: var(--accent); font-weight: bold; background: none; border: none;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .add-funds-btn:hover { color: var(--wood-dark); }
+
+        .stats-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 50px;
+        }
+        .stat-box {
+            background: #fff; padding: 25px; border-radius: 10px; text-align: center;
+            box-shadow: var(--shadow-soft); transition: all 0.3s ease; border-bottom: 4px solid var(--wood-light);
+        }
+        .stat-box:hover { 
+            transform: translateY(-5px); 
+            box-shadow: var(--shadow-hard);
+        }
+        .stat-val { font-size: 2rem; font-weight: bold; color: var(--wood-dark); display: block; }
+        .stat-lbl { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
+        .stat-icon { font-size: 2rem; color: var(--accent); margin-bottom: 15px; }
+
+        .section-header { 
+            display: flex; justify-content: space-between; align-items: flex-end; 
+            margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid rgba(62,39,35,0.1); 
+        }
+        .section-title { font-size: 1.8rem; }
+
+        .rent-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-bottom: 60px; 
+        }
+        .rent-card {
+            background: #fff; border-radius: 10px; padding: 25px; display: flex; gap: 20px; position: relative;
+            box-shadow: var(--shadow-soft); transition: all 0.3s ease; border: 1px solid rgba(62,39,35,0.05);
+        }
+        .rent-card:hover { 
+            box-shadow: var(--shadow-hard); 
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .rent-img { 
+            width: 90px; height: 135px; object-fit: cover; border-radius: 6px; 
+            box-shadow: var(--shadow-soft);
+        }
+        .rent-info { flex: 1; display: flex; flex-direction: column; }
+        .rent-title { font-weight: bold; margin-bottom: 6px; color: var(--wood-dark); font-size: 1.1rem; }
+        .rent-author { font-size: 0.9rem; color: var(--text-muted); font-style: italic; margin-bottom: 15px; }
+        .rent-tag { 
+            font-size: 0.8rem; padding: 6px 12px; border-radius: 6px; align-self: flex-start; 
+            margin-bottom: auto; font-weight: bold;
+        }
+        .tag-urgent { background: #ffebee; color: var(--danger); }
+        .tag-normal { background: #e8f5e9; color: var(--success); }
+        
+        .return-btn { 
+            background: var(--wood-dark); color: #fff; border: none; padding: 10px 16px; 
+            border-radius: 6px; font-size: 0.9rem; margin-top: 15px; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .return-btn:hover { 
+            background: var(--accent); color: var(--wood-dark); transform: translateY(-2px);
+        }
+
+        .fav-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; margin-bottom: 60px;
+        }
+        .fav-card { 
+            cursor: pointer; transition: all 0.3s ease; position: relative;
+        }
+        .fav-card:hover { transform: translateY(-8px); }
+        .fav-img { 
+            width: 100%; height: 270px; object-fit: cover; border-radius: 8px; 
+            box-shadow: var(--shadow-soft); transition: all 0.3s ease;
+        }
+        .fav-card:hover .fav-img { 
+            box-shadow: var(--shadow-hard);
+        }
+        .remove-favorite {
+            position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9);
+            border: none; border-radius: 50%; width: 35px; height: 35px; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; z-index: 3;
+            transition: all 0.3s ease; color: var(--danger); opacity: 0;
+        }
+        .fav-card:hover .remove-favorite {
+            opacity: 1;
+        }
+        .remove-favorite:hover {
+            background: #fff; transform: scale(1.1);
+        }
+        .fav-info {
+            padding: 10px 5px;
+        }
+        .fav-title { 
+            font-weight: 600; color: var(--wood-dark); font-size: 0.95rem;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .fav-author {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 3rem; margin-bottom: 20px; opacity: 0.5;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 30, 26, 0.85); backdrop-filter: blur(5px); z-index: 2000;
+            display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; }
+
+        .modal-container {
+            background: #fff; width: 90%; border-radius: 10px; overflow: hidden; display: flex;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); position: relative; transform: scale(0.9); transition: transform 0.3s;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-container { transform: scale(1); }
+        
+        .modal-md { max-width: 500px; flex-direction: column; }
+        
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; z-index: 10;
+            transition: 0.3s;
+        }
+        .close-modal-btn:hover { color: var(--wood-dark); transform: scale(1.1); }
+
+        .modal-header { 
+            background: var(--wood-dark); padding: 25px; color: #fff; text-align: center; 
+        }
+        .modal-body { 
+            padding: 30px; width: 100%;
+        }
+
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;
+            color: var(--wood-dark);
+        }
+        .form-group input { 
+            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 4px; 
+            font-family: 'Lato', sans-serif; transition: 0.3s;
+        }
+        .form-group input:focus {
+            border-color: var(--wood-dark);
+            box-shadow: 0 0 0 2px rgba(62, 39, 35, 0.1);
+        }
+
+        .notif-list { list-style: none; max-height: 400px; overflow-y: auto; }
+        .notif-item { 
+            padding: 15px; border-bottom: 1px solid rgba(62,39,35,0.1); 
+            display: flex; gap: 15px; align-items: start; transition: 0.3s;
+        }
+        .notif-item:hover { background: rgba(250, 247, 240, 0.5); }
+        .notif-item:last-child { border: none; }
+        .notif-icon { color: var(--accent); margin-top: 3px; font-size: 1.1rem; }
+        .notif-text { font-size: 0.95rem; color: var(--text-main); line-height: 1.5; }
+        .notif-time { font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 5px; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: #fff; padding: 15px 20px; border-radius: 8px; width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-left: 5px solid; display: flex; align-items: center; gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .user-card { flex-direction: column; text-align: center; gap: 25px; }
+            .user-main { flex-direction: column; }
+            .stats-row { grid-template-columns: 1fr; }
+            .rent-grid { grid-template-columns: 1fr; }
+            .fav-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .header-actions { gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .user-greeting { font-size: 0.8rem; }
+        }
+
+.process-timeline {
+    margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(62,39,35,0.1);
+}
+.timeline-item {
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+}
+.timeline-dot.active { background: var(--success); }
+.timeline-dot.pending { background: #ccc; }
+.timeline-content {
+    font-size: 0.8rem; color: var(--text-muted);
+}
+.timeline-date {
+    font-size: 0.7rem; color: var(--text-muted); opacity: 0.7; margin-top: 2px;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-shipped { background: #d1ecf1; color: #0c5460; }
+.status-inreview { background: #cce5ff; color: #004085; }
+.status-completed { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fas fa-book-open"></i> DijitalRaf.</a>
+        <div class="header-actions" id="headerActions">
+        </div>
+    </header>
+
+    <div class="profile-wrapper">
+        
+        <div class="user-card">
+            <div class="user-main">
+                <div class="avatar-circle" id="userAvatar">MY</div>
+                <div class="user-details">
+                    <h2 id="displayName">Yükleniyor...</h2>
+                    <p id="userInfo">Premium Üye • İstanbul</p>
+                    <span class="edit-profile-link" onclick="openModal('editProfileModal')">
+                        <i class="fas fa-pen"></i> Profili Düzenle
+                    </span>
+                </div>
+            </div>
+            
+            <div class="wallet-box">
+                <span class="wallet-label">Kütüphane Bakiyesi</span>
+                <span class="wallet-amount" id="walletAmount">0.00 TL</span>
+                <button class="add-funds-btn" onclick="openModal('walletModal')">
+                    <i class="fas fa-plus"></i> Bakiye Yükle
+                </button>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <i class="fas fa-book stat-icon"></i>
+                <span class="stat-val" id="statBooks">0</span>
+                <span class="stat-lbl">Okunan Kitap</span>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-file-alt stat-icon"></i>
+                <span class="stat-val" id="statPages">0</span>
+                <span class="stat-lbl">Çevrilen Sayfa</span>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-clock stat-icon"></i>
+                <span class="stat-val" id="statHours">0</span>
+                <span class="stat-lbl">Okuma Saati</span>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-heart stat-icon"></i>
+                <span class="stat-val" id="favoriteCount">0</span>
+                <span class="stat-lbl">Favori Kitap</span>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h3 class="section-title">Masamdaki Kitaplar</h3>
+        </div>
+        <div class="rent-grid" id="activeRentals">
+        </div>
+
+<div class="section-header" id="returnProcessSection" style="display: none;">
+    <h3 class="section-title">İade Sürecindekiler</h3>
+</div>
+<div class="rent-grid" id="returnProcessGrid">
+</div>
+<div class="section-header" id="returnProcessSection" style="display: none;">
+    <h3 class="section-title">İade Sürecindekiler</h3>
+</div>
+<div class="rent-grid" id="returnProcessGrid">
+</div>
+
+        <div class="section-header">
+            <h3 class="section-title">Favorilerim</h3>
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                <i class="fas fa-plus"></i> Daha Fazla Kitap Keşfet
+            </button>
+        </div>
+        <div class="fav-grid" id="favoritesGrid">
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('editProfileModal')">&times;</span>
+            <div class="modal-header">
+                <h3>Profili Düzenle</h3>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="saveProfile(event)">
+                    <div class="form-group">
+                        <label>Ad Soyad</label>
+                        <input type="text" id="inputName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-Posta</label>
+                        <input type="email" id="inputEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="tel" id="inputPhone">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="walletModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('walletModal')">&times;</span>
+            <div class="modal-header">
+                <h3>Cüzdan İşlemleri</h3>
+            </div>
+            <div class="modal-body">
+                <div style="background: var(--bg-color); padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center;">
+                    Mevcut Bakiye: <strong id="modalCurrentBalance" style="color: var(--wood-dark); font-size: 1.2rem;">0.00 TL</strong>
+                </div>
+                <form onsubmit="addFunds(event)">
+                    <div class="form-group">
+                        <label>Yüklenecek Tutar (TL)</label>
+                        <input type="number" id="fundAmount" placeholder="Örn: 50" min="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kart Numarası</label>
+                        <input type="text" placeholder="**** **** **** ****" required>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Son Kullanma</label>
+                            <input type="text" placeholder="AA/YY" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="text" placeholder="***" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-credit-card"></i> Ödeme Yap ve Yükle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="notifModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('notifModal')">&times;</span>
+            <div class="modal-header">
+                <h3>Duyurular</h3>
+            </div>
+            <div class="modal-body">
+                <ul class="notif-list">
+                    <li class="notif-item">
+                        <i class="fas fa-exclamation-circle notif-icon"></i>
+                        <div>
+                            <div class="notif-text">"Suç ve Ceza" kitabının iade süresi yaklaşıyor (3 gün kaldı).</div>
+                            <span class="notif-time">2 saat önce</span>
+                        </div>
+                    </li>
+                    <li class="notif-item">
+                        <i class="fas fa-box-open notif-icon"></i>
+                        <div>
+                            <div class="notif-text">İstediğiniz "Sapiens" kitabı stoğa girdi.</div>
+                            <span class="notif-time">Dün</span>
+                        </div>
+                    </li>
+                    <li class="notif-item">
+                        <i class="fas fa-gift notif-icon"></i>
+                        <div>
+                            <div class="notif-text">Doğum gününüz kutlu olsun! Size özel %20 kargo indirimi tanımlandı.</div>
+                            <span class="notif-time">3 gün önce</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="returnCodeModal">
+    <div class="modal-container modal-md">
+        <span class="close-modal-btn" onclick="closeModal('returnCodeModal')">&times;</span>
+        <div class="modal-header">
+            <h3><i class="fas fa-barcode"></i> İade Talebi Oluşturuldu</h3>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                İade edilecek ürünü aşağıdaki iade kodu ile birlikte seçtiğiniz kargo firmasına teslim ederek iade işlemini gerçekleştirebilirsiniz.
+            </p>
+            
+            <div style="background: #f0eadd; border: 2px dashed var(--wood-dark); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <span style="display: block; font-size: 0.9rem; color: var(--wood-light); margin-bottom: 5px;">İADE KODUNUZ</span>
+                <strong id="generatedReturnCode" style="font-size: 2.5rem; letter-spacing: 5px; color: var(--wood-dark); font-family: monospace;">---</strong>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--danger);">
+                <i class="fas fa-clock"></i> Bu kod 24 saat boyunca geçerlidir.
+            </p>
+
+            <button class="btn btn-primary" onclick="closeModal('returnCodeModal')" style="width: 100%; justify-content: center; margin-top: 15px;">
+                Tamam, Anlaşıldı
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+   
+    async function checkLoginStatus() {
+        try {
+            const response = await fetch('api/check_session.php');
+            const result = await response.json();
+            
+            console.log("Oturum kontrolü:", result);
+            
+            if(!result.logged_in) {
+                window.location.href = 'index.html';
+                return false;
+            }
+            return result.user;
+        } catch (error) {
+            console.error('Giriş kontrolü hatası:', error);
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    async function logout() {
+        try {
+            const response = await fetch('api/logout.php');
+            const result = await response.json();
+            
+            if(result.success) {
+                actionSuccess('Çıkış yapıldı. Ana sayfaya yönlendiriliyorsunuz...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        } catch (error) {
+            console.error('Çıkış hatası:', error);
+            window.location.href = 'index.html';
+        }
+    }
+
+    function updateHeaderForLoggedInUser(user) {
+        const headerActions = document.getElementById('headerActions');
+        headerActions.innerHTML = `
+            <button class="icon-btn" onclick="window.location.href='index.html'" title="Ana Sayfa">
+                <i class="fas fa-home"></i>
+            </button>
+            <button class="icon-btn" onclick="openModal('notifModal')" title="Bildirimler">
+                <i class="far fa-bell"></i>
+                <span class="badge-dot"></span>
+            </button>
+            <span class="user-greeting">Hoş geldin, ${user.ad_soyad.split(' ')[0]}</span>
+            <button class="icon-btn" onclick="logout()" title="Çıkış Yap">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        `;
+    }
+
+    async function loadUserData(user) {
+        try {
+            const response = await fetch('api/get_user.php');
+            const result = await response.json();
+            
+            console.log("Kullanıcı verisi:", result);
+            
+            if(!result.success) {
+                console.error("Kullanıcı verisi alınamadı:", result.error);
+                return;
+            }
+            
+            document.getElementById('displayName').innerText = result.ad_soyad;
+            document.getElementById('userAvatar').innerText = result.ad_soyad.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+            document.getElementById('walletAmount').innerText = parseFloat(result.bakiye || 0).toFixed(2) + ' TL';
+            document.getElementById('modalCurrentBalance').innerText = parseFloat(result.bakiye || 0).toFixed(2) + ' TL';
+            
+            document.getElementById('inputName').value = result.ad_soyad;
+            document.getElementById('inputEmail').value = result.email;
+            if(result.telefon) {
+                document.getElementById('inputPhone').value = result.telefon;
+            }
+            
+        } catch (error) {
+            console.error('Kullanıcı bilgisi yüklenemedi:', error);
+        }
+    }
+
+    async function loadUserRentals() {
+        try {
+            const response = await fetch('api/get_user_rentals.php');
+            const result = await response.json();
+            
+            console.log("Kiralama verisi:", result);
+            
+            if(!result.success) {
+                console.error('Kiralama verisi alınamadı:', result.error);
+                renderRentals([]);
+                return;
+            }
+            
+            renderRentals(result.data || []);
+        } catch (error) {
+            console.error('Kiralama yüklenemedi:', error);
+            renderRentals([]);
+        }
+    }
+
+    async function loadUserFavorites() {
+        try {
+            const response = await fetch('api/get_user_favorites.php');
+            const result = await response.json();
+            
+            console.log("Favori verisi:", result);
+            
+            if(!result.success) {
+                console.error('Favori verisi alınamadı:', result.error);
+                renderFavorites([]);
+                return;
+            }
+            
+            renderFavorites(result.data || []);
+        } catch (error) {
+            console.error('Favoriler yüklenemedi:', error);
+            renderFavorites([]);
+        }
+    }
+
+    async function loadUserStats() {
+        try {
+            const response = await fetch('api/get_user_stats.php');
+            const result = await response.json();
+            
+            console.log("İstatistik verisi:", result);
+            
+            if(!result.success) {
+                console.error('İstatistik verisi alınamadı:', result.error);
+                return;
+            }
+            
+            renderStats(result);
+        } catch (error) {
+            console.error('İstatistikler yüklenemedi:', error);
+        }
+    }
+
+   
+    function renderStats(stats) {
+        document.getElementById('statBooks').innerText = stats.okunan_kitap || 0;
+        document.getElementById('statPages').innerText = stats.cevrilen_sayfa || 0;
+        document.getElementById('statHours').innerText = stats.okuma_saati || 0;
+        document.getElementById('favoriteCount').innerText = stats.favori_sayisi || 0;
+    }
+
+    function renderFavorites(favorites) {
+        const container = document.getElementById('favoritesGrid');
+        container.innerHTML = '';
+        
+        document.getElementById('favoriteCount').innerText = favorites.length;
+        
+        if(favorites.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-heart"></i>
+                    <h3 style="margin-bottom: 10px;">Henüz favori kitabınız yok</h3>
+                    <p>Kitapları keşfedin ve beğendiklerinizi favorilerinize ekleyin!</p>
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'" style="margin-top: 20px;">
+                        <i class="fas fa-search"></i> Kitapları Keşfet
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        favorites.forEach((book, index) => {
+            const favCard = document.createElement('div');
+            favCard.className = 'fav-card';
+            favCard.innerHTML = `
+                <button class="remove-favorite" onclick="removeFromFavorites(${book.id})" title="Favorilerden Kaldır">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="${book.kapak_resmi || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'}" class="fav-img" alt="${book.baslik}" onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'">
+                <div class="fav-info">
+                    <div class="fav-title">${book.baslik}</div>
+                    <div class="fav-author">${book.yazar}</div>
+                </div>
+            `;
+            container.appendChild(favCard);
+        });
+    }
+
+    async function removeFromFavorites(kitapId) {
+        if(confirm("Bu kitabı favorilerinizden kaldırmak istiyor musunuz?")) {
+            try {
+                const response = await fetch('api/remove_favorite.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ kitap_id: kitapId })
+                });
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    loadUserFavorites();
+                    loadUserStats();
+                    actionSuccess(result.message);
+                } else {
+                    alert(result.error);
+                }
+            } catch (error) {
+                alert('Favori kaldırılırken hata oluştu: ' + error);
+            }
+        }
+    }
+
+    function renderRentals(rentals) {
+        const container = document.getElementById('activeRentals');
+        container.innerHTML = "";
+        
+        if(rentals.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <h3 style="margin-bottom: 10px;">Henüz kitap kiralamamışsınız</h3>
+                    <p>Kütüphanemizdeki kitapları keşfedin ve ilk kiralama işleminizi yapın!</p>
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'" style="margin-top: 20px;">
+                        <i class="fas fa-search"></i> Kitapları Keşfet
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        rentals.forEach((rental) => {
+            const kiralamaTarihi = new Date(rental.kiralama_tarihi);
+            const simdi = new Date();
+            const gunFarki = Math.floor((simdi - kiralamaTarihi) / (1000 * 60 * 60 * 24));
+            const kalanGun = 14 - gunFarki;
+            
+            const isUrgent = kalanGun <= 3;
+            const tagClass = isUrgent ? 'tag-urgent' : 'tag-normal';
+            const tagText = isUrgent ? `Son ${kalanGun} Gün!` : `${kalanGun} Gün Kaldı`;
+
+            const card = document.createElement('div');
+            card.className = 'rent-card';
+            card.innerHTML = `
+                <img src="${rental.kapak_resmi || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'}" class="rent-img" alt="${rental.baslik}" onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'">
+                <div class="rent-info">
+                    <span class="rent-tag ${tagClass}">${tagText}</span>
+                    <div class="rent-title">${rental.baslik}</div>
+                    <div class="rent-author">${rental.yazar}</div>
+                    <button class="return-btn" onclick="returnBook(${rental.id})">
+                        <i class="fas fa-undo"></i> İade Et
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+let returnProcessBooks = [];
+async function returnBook(kiralamaId) {
+    if(confirm("İade talebi oluşturmak üzeresiniz. Onaylıyor musunuz?")) {
+        try {
+            const randomSayi = Math.floor(1000 + Math.random() * 9000);
+            const iadeKodu = 'RF-' + randomSayi;
+
+            try {
+                const response = await fetch('api/get_user_rentals.php');
+                const result = await response.json();
+                
+                if(result.success && result.data) {
+                    const kitap = result.data.find(r => r.id == kiralamaId);
+                    if(kitap) {
+                        const newReturnProcess = {
+                            id: Date.now(), 
+                            kiralamaId: kiralamaId,
+                            baslik: kitap.baslik,
+                            yazar: kitap.yazar,
+                            kapak_resmi: kitap.kapak_resmi,
+                            returnCode: iadeKodu,
+                            returnDate: new Date().toISOString().split('T')[0],
+                            status: 'pending', 
+                            timeline: [
+                                { step: "İade Talebi Oluşturuldu", date: new Date().toISOString().split('T')[0], active: true },
+                                { step: "Kargoya Verildi", date: null, active: false },
+                                { step: "Kargoda", date: null, active: false },
+                                { step: "İnceleniyor", date: null, active: false },
+                                { step: "Tamamlandı", date: null, active: false }
+                            ]
+                        };
+                        
+                        returnProcessBooks.push(newReturnProcess);
+                        
+                        try {
+                            const iadeResponse = await fetch('api/return_book.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 
+                                    kiralama_id: kiralamaId,
+                                    return_code: iadeKodu 
+                                })
+                            });
+                            
+                            const iadeResult = await iadeResponse.json();
+                            
+                            if(iadeResult.success) {
+                                loadUserRentals();
+                                
+                                document.getElementById('returnProcessSection').style.display = 'flex';
+                                renderReturnProcess();
+                                
+                                document.getElementById('generatedReturnCode').innerText = iadeKodu;
+                                
+                                openModal('returnCodeModal');
+                                
+                                actionSuccess("İade talebiniz alındı, lütfen kodu not edin.");
+                            } else {
+                                alert('İade işlemi başarısız: ' + iadeResult.error);
+                            }
+                            
+                        } catch (apiError) {
+                            console.error("API hatası:", apiError);
+                            alert('İade işlemi sırasında bir hata oluştu.');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Kitap bilgisi alınamadı:", error);
+            }
+
+        } catch (error) {
+            alert('İade kodu oluşturulurken hata oluştu: ' + error);
+        }
+    }
+}
+
+function renderReturnProcess() {
+    const container = document.getElementById('returnProcessGrid');
+    container.innerHTML = '';
+    
+    if(returnProcessBooks.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3 style="margin-bottom: 10px;">İade sürecinde kitap yok</h3>
+                <p>İade ettiğiniz kitaplar burada görünecektir.</p>
+            </div>
+        `;
+        document.getElementById('returnProcessSection').style.display = 'none';
+        return;
+    }
+    
+    returnProcessBooks.forEach((book, index) => {
+        const statusClass = `status-${book.status}`;
+        const statusIcon = getReturnStatusIcon(book.status);
+        const statusText = getReturnStatusText(book.status);
+        
+        const card = document.createElement('div');
+        card.className = 'rent-card';
+        card.innerHTML = `
+            <img src="${book.kapak_resmi || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'}" 
+                 class="rent-img" alt="${book.baslik}" 
+                 onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'">
+            <div class="rent-info">
+                <div class="rent-title">${book.baslik}</div>
+                <div class="rent-author">${book.yazar}</div>
+                
+                <!-- İade Süreci Bilgisi -->
+                <div class="return-process">
+                    <div class="process-tag ${statusClass}">
+                        <i class="${statusIcon}"></i> ${statusText}
+                    </div>
+                    <div class="process-info">
+                        <i class="fas fa-barcode"></i> İade Kodu: <strong>${book.returnCode}</strong>
+                        <br>
+                        <i class="far fa-calendar"></i> Talep Tarihi: ${book.returnDate}
+                    </div>
+                </div>
+                
+                <!-- Zaman Çizelgesi -->
+                <div class="process-timeline">
+                    ${book.timeline.map((item, idx) => `
+                        <div class="timeline-item">
+                            <div class="timeline-dot ${item.active ? 'active' : 'pending'}"></div>
+                            <div class="timeline-content">
+                                ${item.step}
+                                ${item.date ? `<div class="timeline-date">${item.date}</div>` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <!-- Durum Güncelleme Butonları (Demo için) -->
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    ${book.status === 'pending' ? `
+                       
+                    ` : ''}
+                    ${book.status === 'shipped' ? `
+                        <button class="btn btn-outline" onclick="updateReturnStatus(${index}, 'inreview')" style="font-size: 0.8rem; padding: 8px 12px;">
+                            <i class="fas fa-search"></i> İncelemeye Al
+                        </button>
+                    ` : ''}
+                    ${book.status === 'inreview' ? `
+                        <button class="btn btn-outline" onclick="updateReturnStatus(${index}, 'completed')" style="font-size: 0.8rem; padding: 8px 12px;">
+                            <i class="fas fa-check"></i> Tamamla
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function getReturnStatusIcon(status) {
+    const icons = {
+        'pending': 'fas fa-clock',
+        'shipped': 'fas fa-shipping-fast',
+        'inreview': 'fas fa-search',
+        'completed': 'fas fa-check-circle'
+    };
+    return icons[status] || 'fas fa-info-circle';
+}
+
+function getReturnStatusText(status) {
+    const texts = {
+        'pending': 'Kargoya Verilmesi Bekleniyor',
+        'shipped': 'Kargoya Verildi',
+        'inreview': 'İnceleniyor',
+        'completed': 'Tamamlandı'
+    };
+    return texts[status] || 'Bilinmiyor';
+}
+
+function updateReturnStatus(bookIndex, newStatus) {
+    const book = returnProcessBooks[bookIndex];
+    book.status = newStatus;
+    
+    const statusIndex = {
+        'pending': 0,
+        'shipped': 1,
+        'inreview': 3,
+        'completed': 4
+    }[newStatus];
+    
+    for(let i = 0; i <= statusIndex; i++) {
+        if(!book.timeline[i].date && i > 0) {
+            book.timeline[i].date = new Date().toISOString().split('T')[0];
+        }
+        book.timeline[i].active = true;
+    }
+    
+    for(let i = statusIndex + 1; i < book.timeline.length; i++) {
+        book.timeline[i].active = false;
+    }
+    
+    if(newStatus === 'shipped') {
+        book.timeline[2].active = true;
+        book.timeline[2].date = new Date().toISOString().split('T')[0];
+    }
+    
+    renderReturnProcess();
+    actionSuccess(`İade durumu "${getReturnStatusText(newStatus)}" olarak güncellendi.`);
+}
+
+function openModal(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'flex';
+    setTimeout(() => el.classList.add('active'), 10);
+}
+
+function closeModal(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('active');
+    setTimeout(() => el.style.display = 'none', 300);
+}
+
+window.onclick = (e) => {
+    if(e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+}
+
+
+function actionSuccess(msg) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.borderLeftColor = 'var(--success)';
+    toast.innerHTML = `<i class="fas fa-check-circle" style="color:var(--success); font-size:1.5rem;"></i><div><h4>Başarılı</h4><p>${msg}</p></div>`;
+    document.getElementById('toastContainer').appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function saveProfile(e) {
+    e.preventDefault();
+    const newName = document.getElementById('inputName').value;
+    document.getElementById('displayName').innerText = newName;
+    
+    const names = newName.split(' ');
+    const initials = names.map(n => n[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('userAvatar').innerText = initials;
+    
+    closeModal('editProfileModal');
+    actionSuccess("Profil bilgileriniz güncellendi.");
+}
+
+async function addFunds(e) {
+    e.preventDefault();
+    const amount = parseFloat(document.getElementById('fundAmount').value);
+    
+    if(amount > 0) {
+        try {
+            const response = await fetch('api/update_wallet.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: amount })
+            });
+            
+            const result = await response.json();
+            
+            if(result.success) {
+                document.getElementById('walletAmount').innerText = result.new_balance.toFixed(2) + " TL";
+                document.getElementById('modalCurrentBalance').innerText = result.new_balance.toFixed(2) + " TL";
+                closeModal('walletModal');
+                actionSuccess(`${amount} TL başarıyla yüklendi!`);
+            } else {
+                alert('Bakiye yükleme hatası: ' + result.error);
+            }
+        } catch (error) {
+            alert('Bakiye yükleme sırasında hata oluştu: ' + error);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log("Profil sayfası yükleniyor...");
+    const user = await checkLoginStatus();
+    if(user) {
+        updateHeaderForLoggedInUser(user);
+        await loadUserData(user);
+        await loadUserStats();
+        await loadUserRentals();
+        await loadUserFavorites();
+        
+        const savedReturns = localStorage.getItem('dijitalraf_return_process');
+        if(savedReturns) {
+            returnProcessBooks = JSON.parse(savedReturns);
+            if(returnProcessBooks.length > 0) {
+                document.getElementById('returnProcessSection').style.display = 'flex';
+                renderReturnProcess();
+            }
+        }
+    }
+    
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('dijitalraf_return_process', JSON.stringify(returnProcessBooks));
+    });
+});
+
+function clearReturnProcess() {
+    if(returnProcessBooks.length === 0) {
+        actionSuccess("Zaten temiz!");
+        return;
+    }
+    
+    if(confirm(`İade sürecindeki ${returnProcessBooks.length} kitabı temizlemek istiyor musunuz?\n\nBu işlem geri alınamaz!`)) {
+        localStorage.removeItem('dijitalraf_return_process');
+        
+        returnProcessBooks = [];
+        
+        document.getElementById('returnProcessSection').style.display = 'none';
+        document.getElementById('returnProcessGrid').innerHTML = '';
+        
+        actionSuccess(`${returnProcessBooks.length} kitap iade sürecinden temizlendi.`);
+        
+        console.log("İade süreci temizlendi.");
+    }
+}
+
+function removeFromReturnProcess(index) {
+    const book = returnProcessBooks[index];
+    
+    if(confirm(`"${book.baslik}" kitabını iade sürecinden kaldırmak istiyor musunuz?`)) {
+        returnProcessBooks.splice(index, 1);
+        
+        localStorage.setItem('dijitalraf_return_process', JSON.stringify(returnProcessBooks));
+        
+        renderReturnProcess();
+        
+        actionSuccess("Kitap iade sürecinden kaldırıldı.");
+    }
+}
+</script>
+</body>
+</html>

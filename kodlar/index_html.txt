@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DijitalRaf | Tamamen İnteraktif Kütüphane</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #faf7f0;
+            --wood-dark: #3e2723;
+            --wood-light: #5d4037;
+            --text-main: #2c1e1a;
+            --text-muted: #795548;
+            --accent: #ffb300;
+            --success: #2e7d32;
+            --warning: #f57c00;
+            --danger: #c62828;
+            --shadow-soft: 0 10px 30px rgba(62, 39, 35, 0.1);
+            --shadow-hard: 0 10px 20px rgba(62, 39, 35, 0.25);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--wood-dark); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; cursor: pointer; }
+        ul { list-style: none; }
+
+        .btn {
+            padding: 10px 24px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            border: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background-color: var(--wood-dark); color: #fff; }
+        .btn-primary:hover { background-color: var(--wood-light); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--wood-dark); color: var(--wood-dark); }
+        .btn-outline:hover { background: var(--wood-dark); color: #fff; }
+        .btn-accent { background-color: var(--accent); color: var(--wood-dark); }
+        .btn-accent:hover { background-color: #ffca28; }
+
+        header {
+            background: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(62, 39, 35, 0.1); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; gap: 10px; display: flex; align-items: center; }
+        
+        .nav-menu { display: flex; gap: 20px; align-items: center; }
+        .nav-link:hover { color: var(--wood-dark); text-decoration: underline; text-decoration-color: var(--accent); }
+        
+        .user-greeting {
+            color: var(--wood-dark); font-weight: 600; font-size: 0.9rem;
+            padding: 5px 12px; background: rgba(255, 179, 0, 0.1); border-radius: 15px;
+        }
+
+        .hero { text-align: center; padding: 80px 20px 40px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 15px; }
+        
+        .hero-badge {
+            background: rgba(255, 179, 0, 0.2); color: var(--wood-dark); padding: 5px 15px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 15px; cursor: pointer; transition: 0.3s;
+        }
+        .hero-badge:hover { background: var(--accent); }
+
+        .search-container {
+            max-width: 800px; margin: 0 auto 30px; background: #fff; padding: 10px; border-radius: 50px;
+            display: flex; box-shadow: var(--shadow-soft); border: 1px solid rgba(62,39,35,0.1);
+        }
+        .search-input { flex: 1; border: none; padding: 15px 25px; font-size: 1rem; border-radius: 50px; }
+        .search-btn-circle { width: 50px; height: 50px; background: var(--wood-dark); color: #fff; border-radius: 50%; border: none; cursor: pointer; }
+
+        .categories { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+        .cat-chip {
+            padding: 8px 16px; border: 1px solid rgba(62, 39, 35, 0.2); border-radius: 20px; font-size: 0.9rem;
+            color: var(--text-muted); cursor: pointer; transition: 0.3s; background: transparent;
+        }
+        .cat-chip:hover, .cat-chip.active { background: var(--wood-dark); color: #fff; }
+
+        .library-container { padding: 20px 5%; max-width: 1400px; margin: 0 auto; }
+        .section-header { display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 1px solid rgba(62,39,35,0.1); padding-bottom: 10px; }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 50px; }
+
+        .book-card { perspective: 1000px; cursor: pointer; position: relative; }
+        .book-inner {
+            position: relative; transition: transform 0.4s; transform-style: preserve-3d;
+            border-radius: 4px 8px 8px 4px; box-shadow: var(--shadow-soft);
+        }
+        .book-card:hover .book-inner { transform: translateY(-10px) rotateY(-5deg); box-shadow: var(--shadow-hard); }
+        .book-cover-img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 0 8px 8px 0; display: block; }
+        .book-inner::before { 
+            content: ''; position: absolute; top: 0; left: 0; width: 12px; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0.3), rgba(0,0,0,0.2)); z-index: 2;
+        }
+        .status-badge {
+            position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; z-index: 3;
+        }
+        .status-available { background: #e8f5e9; color: var(--success); }
+        .status-warning { background: #fff3cd; color: #856404; }
+        .status-soldout { background: #f8d7da; color: #721c24; }
+        .status-rented { background: #ffebee; color: var(--danger); }
+
+        .favorite-btn {
+            position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); 
+            border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer; z-index: 3; 
+            transition: all 0.3s ease; color: var(--text-muted);
+        }
+        .favorite-btn:hover { 
+            background: #fff; transform: scale(1.1); color: var(--danger);
+        }
+        .favorite-btn.active { 
+            background: #fff; color: var(--danger);
+        }
+        
+        .book-details-mini { padding: 15px 5px; }
+        .mini-title { font-weight: 700; color: var(--wood-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 30, 26, 0.85); backdrop-filter: blur(5px); z-index: 1000;
+            display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; }
+
+        .modal-container {
+            background: #fff; width: 90%; border-radius: 10px; overflow: hidden; display: flex;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); position: relative; transform: scale(0.9); transition: transform 0.3s;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-container { transform: scale(1); }
+        
+        .modal-lg { max-width: 900px; }
+        .modal-md { max-width: 450px; }
+        
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; z-index: 10;
+        }
+
+        .modal-book-visual { flex: 1; background: #e0e0e0; min-height: 400px; }
+        .modal-book-visual img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-book-info { flex: 1.5; padding: 40px; display: flex; flex-direction: column; }
+
+        .info-content { padding: 40px; width: 100%; }
+        .info-content h2 { margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; display: inline-block; }
+        .info-content p { margin-bottom: 15px; color: var(--text-main); }
+        .info-content ul { list-style: disc; padding-left: 20px; margin-bottom: 20px; color: var(--text-muted); }
+        .info-content li { margin-bottom: 8px; }
+
+        .login-header { background: var(--wood-dark); padding: 20px; color: #fff; text-align: center; }
+        .login-body { padding: 30px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;}
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .form-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+        .form-tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; color: var(--text-muted); }
+        .form-tab.active { color: var(--wood-dark); border-bottom: 2px solid var(--wood-dark); font-weight: bold; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: #fff; padding: 15px 20px; border-radius: 8px; width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-left: 5px solid; display: flex; align-items: center; gap: 15px;
+        }
+
+        footer { background: var(--wood-dark); color: #f4ecd8; padding: 40px 5%; margin-top: 60px; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .footer-col ul li { margin-bottom: 10px; opacity: 0.7; cursor: pointer; transition: 0.3s; }
+        .footer-col ul li:hover { opacity: 1; color: var(--accent); padding-left: 5px; }
+        
+        .newsletter-box {
+            display: flex; background: #fff; padding: 5px; border-radius: 50px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 300px;
+        }
+        .newsletter-input {
+            border: none; padding: 10px 15px; flex: 1; border-radius: 50px; outline: none; font-size: 0.9rem;
+        }
+        .newsletter-btn {
+            background: var(--wood-dark); color: #fff; border: none; padding: 10px 20px; 
+            border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.3s;
+        }
+        .newsletter-btn:hover { background: var(--accent); color: var(--wood-dark); }
+
+        @media (max-width: 768px) {
+            .modal-lg { flex-direction: column; }
+            .modal-book-visual { height: 200px; flex: none; }
+            .nav-menu { gap: 15px; flex-wrap: wrap; justify-content: center; }
+            .user-greeting { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <header>
+        <a onclick="location.reload()" class="logo"><i class="fas fa-book-open"></i> DijitalRaf.</a>
+        <nav class="nav-menu" id="navMenu">
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Huzurun Adresi</h1>
+        <p>Sessizliğin ve bilginin dijital durağına hoşgeldiniz.</p>
+
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Kitap adı, yazar veya tür ara...">
+            <button class="search-btn-circle"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="categories">
+            <button class="cat-chip active" onclick="filterBooks('all')">Tümü</button>
+            <button class="cat-chip" onclick="filterBooks('Roman')">Roman</button>
+            <button class="cat-chip" onclick="filterBooks('Tarih')">Tarih</button>
+            <button class="cat-chip" onclick="filterBooks('Bilim')">Bilim</button>
+            <button class="cat-chip" onclick="filterBooks('Felsefe')">Felsefe</button>
+        </div>
+    </div>
+
+    <div class="library-container">
+        <div class="section-header">
+            <h2 class="section-title">Raflar</h2>
+            <span class="result-count" id="resultCount">Yükleniyor...</span>
+        </div>
+        <div class="book-grid" id="bookGrid"></div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>DijitalRaf.</h4>
+                <p style="font-size: 0.9rem; opacity: 0.7;">Akıllı kütüphane sistemi.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Keşfet</h4>
+                <ul>
+                    <li onclick="openInfoModal('populer')">Popüler Kitaplar</li>
+                    <li onclick="openInfoModal('yazarlar')">Yazarlarımız</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Yardım</h4>
+                <ul>
+                    <li onclick="openInfoModal('nasil_kiralarim')">Nasıl Kiralarım?</li>
+                    <li onclick="openInfoModal('iade')">İade Süreci</li>
+                    <li onclick="openInfoModal('iletisim')">Bize Ulaşın</li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Bülten</h4>
+                <p style="font-size:0.8rem; margin-bottom:10px; opacity:0.7;">Yeni kitaplardan haberdar ol.</p>
+                <div class="newsletter-box">
+                    <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="E-posta adresiniz">
+                    <button class="newsletter-btn" onclick="subscribeNewsletter()">Kayıt Ol</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="copyright" style="text-align: center; margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
+            &copy; 2025 DijitalRaf. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="bookDetailModal">
+        <div class="modal-container modal-lg">
+            <span class="close-modal-btn" onclick="closeModal('bookDetailModal')">&times;</span>
+            <div class="modal-book-visual"><img id="modalImg" src=""></div>
+            <div class="modal-book-info">
+                <h2 id="modalTitle" style="font-size: 2rem; margin-bottom: 5px;"></h2>
+                <p id="modalAuthor" style="color: var(--accent); font-style: italic; margin-bottom: 20px;"></p>
+                <p id="modalDesc" style="margin-bottom: 30px;"></p>
+                <button class="btn btn-primary" id="modalRentBtn" style="margin-top: auto; justify-content: center;">Kiralama İşlemine Git</button>
+            </div>
+        </div>
+    </div>
+
+ <div class="modal-overlay" id="loginModal">
+    <div class="modal-container modal-md" style="flex-direction: column;">
+        <span class="close-modal-btn" onclick="closeModal('loginModal')" style="color: #fff;">&times;</span>
+        <div class="login-header"><h3>Hesap Erişimi</h3></div>
+        <div class="login-body">
+            <div class="form-tabs">
+                <div class="form-tab active" id="loginTab" onclick="switchAuthTab('login')">Giriş Yap</div>
+                <div class="form-tab" id="registerTab" onclick="switchAuthTab('register')">Yeni Kayıt</div>
+            </div>
+            
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>E-Posta</label>
+                    <input type="text" id="loginEmail" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPassword" placeholder="••••••" required>
+                </div>
+                <button class="btn btn-primary" style="width:100%; justify-content: center;" onclick="loginUser()">
+                    Giriş Yap
+                </button>
+            </div>
+
+          <div id="registerForm" style="display:none;">
+    <div class="form-group">
+        <label>Ad Soyad</label>
+        <input type="text" id="registerName" placeholder="Adınız Soyadınız" required>
+    </div>
+    <div class="form-group">
+        <label>E-Posta</label>
+        <input type="email" id="registerEmail" placeholder="E-posta Adresiniz" required>
+    </div>
+    <div class="form-group">
+        <label>Şifre Belirle</label>
+        <input type="password" id="registerPassword" placeholder="••••••" required minlength="6">
+    </div>
+    <button class="btn btn-accent" style="width:100%; justify-content: center;" onclick="registerUser()">
+        <i class="fas fa-user-plus"></i> Üyeliği Başlat
+    </button>
+</div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('infoModal')">&times;</span>
+            <div class="info-content">
+                <h2 id="infoTitle">Başlık</h2>
+                <div id="infoBody">İçerik...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const staticContent = {
+            "nasil_kiralarim": {
+                title: "Nasıl Kitap Kiralarım?",
+                body: `<p>Sadece 3 basit adımda kitabınız elinizde:</p>
+                       <ol style="margin-left:20px; color:var(--text-main);">
+                        <li style="margin-bottom:10px"><strong>1. Seç:</strong> Raflardan beğendiğin kitaba tıkla.</li>
+                        <li style="margin-bottom:10px"><strong>2. Kirala:</strong> Detay penceresindeki butona bas.</li>
+                        <li><strong>3. Teslim Al:</strong> Açılan formda adresini gir ve kitabın gelsin.</li>
+                       </ol>`
+            },
+            "iade": {
+                title: "İade Süreci",
+                body: `<p>Okumanız bittiğinde kitabı size gönderdiğimiz kutuya koyup, içindeki ücretsiz kargo koduyla herhangi bir kargo şubesine teslim etmeniz yeterlidir.</p>`
+            },
+            "iletisim": {
+                title: "Bize Ulaşın",
+                body: `<div class="form-group">
+                        <label>Konu</label>
+                        <input type="text" placeholder="Örn: Kitap Önerisi">
+                       </div>
+                       <div class="form-group">
+                        <label>Mesajınız</label>
+                        <textarea rows="4"></textarea>
+                       </div>
+                       <button class="btn btn-primary" onclick="actionSuccess('Mesajınız iletildi!')">Gönder</button>`
+            },
+            "populer": { title: "Popüler Kitaplar", body: "<p>Bu ay en çok '1984' ve 'Simyacı' okundu. Raflarımızda hala stok var!</p>" },
+            "yazarlar": { title: "Yazarlarımız", body: "<p>Veritabanımızda 20+ yazar bulunmaktadır. Özel bir yazar arıyorsanız arama çubuğunu kullanabilirsiniz.</p>" }
+        };
+
+async function registerUser() {
+    const ad_soyad = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const sifre = document.getElementById('registerPassword').value;
+
+    console.log("Kayıt denemesi:", { ad_soyad, email });
+
+    if (!ad_soyad || !email || !sifre) {
+        actionError('Lütfen tüm zorunlu alanları doldurun');
+        return;
+    }
+
+    if (sifre.length < 6) {
+        actionError('Şifre en az 6 karakter olmalıdır');
+        return;
+    }
+
+    try {
+        const response = await fetch('api/register.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                ad_soyad: ad_soyad, 
+                email: email, 
+                sifre: sifre
+            })
+        });
+        
+        const result = await response.json();
+        console.log("Kayıt sonucu:", result);
+        
+        if (result.success) {
+            actionSuccess('Kayıt başarılı! Hoş geldiniz...');
+            closeModal('loginModal');
+            
+            updateHeaderForLoginStatus({
+                logged_in: true,
+                user: result.user
+            });
+            
+            setTimeout(() => {
+                window.location.href = 'profil.html';
+            }, 1500);
+        } else {
+            actionError(result.message || 'Kayıt başarısız!');
+        }
+    } catch (error) {
+        console.error('Kayıt hatası:', error);
+        actionError('Kayıt sırasında bir hata oluştu.');
+    }
+}
+function switchAuthTab(tab) {
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+    
+    document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tab + 'Tab').classList.add('active');
+
+    if (tab === 'login') {
+        document.getElementById('registerName').value = '';
+        document.getElementById('registerEmail').value = '';
+        document.getElementById('registerPassword').value = '';
+        document.getElementById('registerPhone').value = '';
+    } else {
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+}
+
+
+
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('api/check_session.php');
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Giriş kontrolü hatası:', error);
+                return { logged_in: false };
+            }
+        }
+
+        function updateHeaderForLoginStatus(result) {
+            const navMenu = document.getElementById('navMenu');
+            
+            if(result.logged_in) {
+                navMenu.innerHTML = `
+                    <span class="user-greeting">Hoş geldin, ${result.user.ad_soyad.split(' ')[0]}</span>
+                    <button class="btn btn-outline" onclick="window.location.href='profil.html'">
+                        <i class="fas fa-user"></i> Profilim
+                    </button>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                    </button>
+                `;
+            } else {
+                navMenu.innerHTML = `
+                    <button class="btn btn-outline" onclick="openLoginModal()">
+                        <i class="far fa-user"></i> Giriş Yap
+                    </button>
+                `;
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('api/logout.php');
+                const result = await response.json();
+                
+                if(result.success) {
+                    actionSuccess('Çıkış yapıldı. Sayfa yenileniyor...');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('Çıkış hatası:', error);
+                location.reload();
+            }
+        }
+
+    
+        async function getBooksFromAPI() {
+            try {
+                const response = await fetch('api/books.php');
+                return await response.json();
+            } catch (error) {
+                console.error('API hatası:', error);
+                return [];
+            }
+        }
+
+        async function addToFavorites(kitapId, event) {
+            event.stopPropagation(); 
+            
+            const loginStatus = await checkLoginStatus();
+            if(!loginStatus.logged_in) {
+                openLoginModal();
+                return;
+            }
+            
+            try {
+                const response = await fetch('api/add_favorite.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ kitap_id: kitapId })
+                });
+                
+                const result = await response.json();
+                console.log("Favori ekleme sonucu:", result);
+                
+                if(result.success) {
+                    const heartIcon = event.target.querySelector('i') || event.target;
+                    heartIcon.className = 'fas fa-heart';
+                    heartIcon.style.color = 'var(--danger)';
+                    event.target.classList.add('active');
+                    
+                    actionSuccess(result.message);
+                } else {
+                    actionError(result.error || result.message);
+                }
+            } catch (error) {
+                console.error('Favori ekleme hatası:', error);
+                actionError('Favori eklenirken hata oluştu');
+            }
+        }
+
+async function rentBook(kitapId) {
+    console.log("Kiralama başlatılıyor, kitap ID:", kitapId);
+    
+    const loginStatus = await checkLoginStatus();
+    console.log("Giriş durumu:", loginStatus);
+    
+    if(!loginStatus.logged_in) {
+        console.log("Kullanıcı giriş yapmamış, login modal açılıyor");
+        openLoginModal();
+        return;
+    }
+    
+    try {
+        console.log("API isteği gönderiliyor...");
+        const response = await fetch('api/rent_book.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ kitap_id: kitapId })
+        });
+        
+        console.log("API yanıtı alındı, status:", response.status);
+        const result = await response.json();
+        console.log("Kiralama API sonucu:", result);
+        
+        if(result.success) {
+            actionSuccess(result.message);
+            renderBooks();
+            closeModal('bookDetailModal');
+        } else {
+            actionError(result.error || result.message || "Kiralama başarısız");
+        }
+    } catch (error) {
+        console.error('Kiralama hatası:', error);
+        actionError('Kiralama sırasında hata oluştu: ' + error.message);
+    }
+}
+
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+
+            console.log("Giriş denemesi:", email, pass);
+
+            closeModal('loginModal');
+
+            try {
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, sifre: pass })
+                });
+                
+                const result = await response.json();
+                console.log("API sonucu:", result);
+                
+                if (result.success) {
+                    if (result.isAdmin) {
+                        actionSuccess('Yönetici girişi onaylandı. Panele yönlendiriliyorsunuz...');
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1500);
+                    } else {
+                        actionSuccess('Giriş başarılı! Hoş geldiniz...');
+                        setTimeout(() => {
+                            window.location.href = 'profil.html';
+                        }, 1500);
+                    }
+                } else {
+                    actionError(result.message || 'Giriş başarısız!');
+                }
+            } catch (error) {
+                console.error('Giriş hatası:', error);
+                actionError('Giriş sırasında bir hata oluştu.');
+            }
+        }
+
+        function openLoginModal() {
+            showModal('loginModal');
+        }
+
+        function openInfoModal(key) {
+            const data = staticContent[key];
+            if(data) {
+                document.getElementById('infoTitle').innerText = data.title;
+                document.getElementById('infoBody').innerHTML = data.body;
+                showModal('infoModal');
+            }
+        }
+
+        async function renderBooks(filter = "all") {
+            const grid = document.getElementById('bookGrid');
+            grid.innerHTML = "Yükleniyor...";
+            
+            const allBooks = await getBooksFromAPI();
+            const filteredData = filter === "all" ? allBooks : allBooks.filter(b => b.kategori === filter);
+            document.getElementById('resultCount').innerText = `Gösterilen: ${filteredData.length} Kitap`;
+
+            grid.innerHTML = "";
+            filteredData.forEach(book => {
+                let badgeText = '';
+                let badgeClass = '';
+                
+                if (book.stok <= 0) {
+                    badgeText = 'TÜKENDİ';
+                    badgeClass = 'status-soldout';
+                } else if (book.stok <= 3) {
+                    badgeText = 'TÜKENİYOR';
+                    badgeClass = 'status-warning';
+                } 
+                const div = document.createElement('div');
+                div.className = 'book-card';
+                div.onclick = () => openBookDetail(book);
+
+                div.innerHTML = `
+                    <div class="book-inner">
+                        <button class="favorite-btn" onclick="addToFavorites(${book.id}, event)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <span class="status-badge ${badgeClass}">
+                            ${badgeText}
+                        </span>
+                        <img src="${book.kapak_resmi}" class="book-cover-img">
+                    </div>
+                    <div class="book-details-mini">
+                        <div class="mini-title">${book.baslik}</div>
+                        <div style="font-size:0.85rem; opacity:0.7">${book.yazar}</div>
+                        <!-- Stok bilgisi ekleyelim -->
+                        
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+function openBookDetail(book) {
+    document.getElementById('modalTitle').innerText = book.baslik;
+    document.getElementById('modalAuthor').innerText = book.yazar;
+    document.getElementById('modalDesc').innerText = book.aciklama;
+    document.getElementById('modalImg').src = book.kapak_resmi;
+    
+    const btn = document.getElementById('modalRentBtn');
+    
+    if(book.stok <= 0) {
+        btn.innerText = "TÜKENDİ";
+        btn.disabled = true;
+        btn.style.background = "#ccc";
+        btn.style.cursor = "not-allowed";
+        btn.onclick = null;
+    } else if(book.stok <= 3) {
+        btn.innerHTML = 'Hemen Kirala! (Tükeniyor) <i class="fas fa-exclamation-triangle"></i>';
+        btn.disabled = false;
+        btn.style.background = "var(--accent)";
+        btn.onclick = () => {
+            window.location.href = `kirala.html?id=${book.id}`;
+        };
+    } else {
+        btn.innerHTML = 'Kitabı Hemen Kirala <i class="fas fa-arrow-right"></i>';
+        btn.disabled = false;
+        btn.style.background = "var(--wood-dark)";
+        btn.onclick = () => {
+            window.location.href = `kirala.html?id=${book.id}`;
+        };
+    }
+    showModal('bookDetailModal');
+}
+
+        function showModal(id) {
+            const el = document.getElementById(id);
+            el.style.display = 'flex';
+            setTimeout(() => el.classList.add('active'), 10);
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('active');
+            setTimeout(() => el.style.display = 'none', 300);
+        }
+
+        function actionSuccess(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = 'var(--success)';
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color:var(--success); font-size:1.5rem;"></i><div><h4>Başarılı</h4><p>${msg}</p></div>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function actionError(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = 'var(--danger)';
+            toast.innerHTML = `<i class="fas fa-times-circle" style="color:var(--danger); font-size:1.5rem;"></i><div><h4>Hata</h4><p>${msg}</p></div>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        function subscribeNewsletter() {
+            const val = document.getElementById('newsletterEmail').value;
+            if(val) actionSuccess("Bültene kaydedildi! Hoşgeldiniz.");
+            else alert("Lütfen e-posta girin.");
+        }
+
+        function filterBooks(cat) {
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            renderBooks(cat);
+        }
+
+        function switchAuthTab(tab) {
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+            document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const loginStatus = await checkLoginStatus();
+            updateHeaderForLoginStatus(loginStatus);
+            renderBooks();
+        });
+
+        document.getElementById('searchInput').addEventListener('input', async (e) => {
+            const val = e.target.value.toLowerCase();
+            const allBooks = await getBooksFromAPI();
+            const filtered = allBooks.filter(b => 
+                b.baslik.toLowerCase().includes(val) || 
+                b.yazar.toLowerCase().includes(val)
+            );
+            const grid = document.getElementById('bookGrid');
+            grid.innerHTML = "";
+            filtered.forEach(book => { 
+                let badgeText = '';
+                let badgeClass = '';
+                
+                if (book.stok <= 0) {
+                    badgeText = 'TÜKENDİ';
+                    badgeClass = 'status-soldout';
+                } else if (book.stok <= 3) {
+                    badgeText = 'TÜKENİYOR';
+                    badgeClass = 'status-warning';
+                } else {
+                    badgeText = 'MÜSAİT';
+                    badgeClass = 'status-available';
+                }
+                
+                const div = document.createElement('div');
+                div.className = 'book-card';
+                div.onclick = () => openBookDetail(book);
+                div.innerHTML = `
+                    <div class="book-inner">
+                        <button class="favorite-btn" onclick="addToFavorites(${book.id}, event)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <span class="status-badge ${badgeClass}">
+                            ${badgeText}
+                        </span>
+                        <img src="${book.kapak_resmi}" class="book-cover-img">
+                    </div>
+                    <div class="book-details-mini">
+                        <div class="mini-title">${book.baslik}</div>
+                        <div style="font-size:0.85rem; opacity:0.7">${book.yazar}</div>
+                        <div style="font-size:0.8rem; margin-top:5px; color:var(--text-muted)">
+                            Stok: ${book.stok} adet
+                        </div>
+                    </div>`;
+                grid.appendChild(div);
+            });
+        });
+
+        window.onclick = (e) => {
+            if(e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+        }
+    </script>
+    
+    <style>
+    #dr-chatbot-container {
+        position: fixed; 
+        bottom: 25px; 
+        right: 25px; 
+        z-index: 9999;
+        font-family: 'Lato', sans-serif;
+    }
+    
+    #dr-chat-toggle {
+        width: 70px;  
+        height: 70px;
+        border-radius: 50%;
+        background: var(--wood-dark, #3e2723); 
+        color: #fff;
+        border: none; 
+        cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.35); 
+        font-size: 28px; 
+        transition: all 0.3s ease; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+    }
+    
+    #dr-chat-toggle:hover { 
+        transform: scale(1.15); 
+        background: var(--accent, #ffb300); 
+        color: var(--wood-dark, #3e2723); 
+    }
+    
+    #dr-chat-window {
+        display: none; 
+        width: 400px; 
+        height: 550px; 
+        background: #fff; 
+        border-radius: 15px; 
+        box-shadow: 0 8px 35px rgba(0,0,0,0.25); 
+        flex-direction: column; 
+        overflow: hidden;
+        position: absolute; 
+        bottom: 85px; 
+        right: 0;
+        border: 2px solid rgba(62, 39, 35, 0.15); 
+        animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp { 
+        from { 
+            opacity:0; 
+            transform:translateY(30px); 
+        } 
+        to { 
+            opacity:1; 
+            transform:translateY(0); 
+        } 
+    }
+    
+    .dr-chat-header {
+        background: var(--wood-dark, #3e2723); 
+        color: #f4ecd8;
+        padding: 18px 20px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between;
+        font-size: 1.05rem; 
+    }
+    
+    .dr-chat-title { 
+        font-family: 'Playfair Display', serif; 
+        font-weight: bold; 
+        display: flex; 
+        gap: 12px;
+        align-items: center; 
+        font-size: 1.1rem; 
+    }
+    
+    .dr-chat-close { 
+        background: none; 
+        border: none; 
+        color: #fff; 
+        font-size: 22px; 
+        cursor: pointer; 
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    
+    .dr-chat-close:hover { 
+        background: rgba(255,255,255,0.2);
+    }
+    
+    .dr-chat-messages {
+        flex: 1; 
+        padding: 20px; 
+        overflow-y: auto; 
+        background: #faf7f0;
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+    }
+    
+    .dr-msg { 
+        max-width: 85%; 
+        padding: 12px 18px; 
+        border-radius: 12px; 
+        font-size: 0.95rem; 
+        line-height: 1.5; 
+    }
+    
+    .dr-msg.user { 
+        align-self: flex-end; 
+        background: var(--wood-light, #5d4037); 
+        color: #fff; 
+        border-bottom-right-radius: 4px; 
+    }
+    
+    .dr-msg.bot { 
+        align-self: flex-start; 
+        background: #fff; 
+        color: #333; 
+        border: 1px solid #ddd; 
+        border-bottom-left-radius: 4px; 
+        box-shadow: 0 3px 8px rgba(0,0,0,0.08); 
+    }
+    
+    .dr-chat-input-area {
+        padding: 15px; 
+        border-top: 1px solid #eee; 
+        background: #fff; 
+        display: flex; 
+        gap: 12px; 
+    }
+    
+    #dr-chat-input {
+        flex: 1; 
+        padding: 12px 18px;
+        border: 1px solid #ddd; 
+        border-radius: 25px; 
+        outline: none; 
+        font-size: 0.95rem; 
+    }
+    
+    #dr-chat-input:focus {
+        border-color: var(--wood-light, #5d4037);
+        box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1);
+    }
+    
+    #dr-chat-send {
+        background: var(--wood-dark, #3e2723); 
+        color: #fff; 
+        border: none;
+        width: 48px; 
+        height: 48px; 
+        border-radius: 50%; 
+        cursor: pointer;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        font-size: 1.1rem; 
+        transition: all 0.2s;
+    }
+    
+    #dr-chat-send:hover { 
+        background: var(--accent, #ffb300); 
+        color: var(--wood-dark); 
+        transform: scale(1.05);
+    }
+    
+    .typing-indicator span {
+        display: inline-block; 
+        width: 8px;
+        height: 8px; 
+        background-color: var(--wood-light, #5d4037); 
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out both; 
+        margin: 0 2px; 
+    }
+    
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing { 
+        0%, 80%, 100% { transform: scale(0); } 
+        40% { transform: scale(1); } 
+    }
+</style>
+
+<div id="dr-chatbot-container">
+    <button id="dr-chat-toggle" onclick="toggleChat()"><i class="fas fa-robot"></i></button>
+    
+    <div id="dr-chat-window">
+        <div class="dr-chat-header">
+            <div class="dr-chat-title">
+                <i class="fas fa-book-reader"></i> DijitalRaf Asistan
+            </div>
+            <button class="dr-chat-close" onclick="toggleChat()">&times;</button>
+        </div>
+        <div class="dr-chat-messages" id="dr-messages">
+            <div class="dr-msg bot">Merhaba! Ben kütüphane asistanınızım. Size kitap stokları veya kiralama işlemleriniz hakkında nasıl yardımcı olabilirim?</div>
+        </div>
+        <div class="dr-chat-input-area">
+            <input type="text" id="dr-chat-input" placeholder="Bir soru sorun..." onkeypress="handleKeyPress(event)">
+            <button id="dr-chat-send" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let chatHistory = []; 
+
+    function toggleChat() {
+        const win = document.getElementById('dr-chat-window');
+        if (win.style.display === 'flex') {
+            win.style.display = 'none';
+        } else {
+            win.style.display = 'flex';
+            document.getElementById('dr-chat-input').focus();
+        }
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function appendMessage(role, text) {
+        const container = document.getElementById('dr-messages');
+        const div = document.createElement('div');
+        div.className = `dr-msg ${role}`;
+        
+        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        formatted = formatted.replace(/\n/g, '<br>');
+        
+        div.innerHTML = formatted;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        return div;
+    }
+
+ async function sendChatMessage() {
+        const input = document.getElementById('dr-chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        appendMessage('user', message);
+        input.value = '';
+
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'dr-msg bot';
+        loadingDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+        document.getElementById('dr-messages').appendChild(loadingDiv);
+        document.getElementById('dr-messages').scrollTop = document.getElementById('dr-messages').scrollHeight;
+
+        try {
+            const response = await fetch('api/chat.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message,
+                    history: chatHistory
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Hatası: ${response.status}`);
+            }
+
+            const textResponse = await response.text(); 
+            let data;
+            try {
+                data = JSON.parse(textResponse);
+            } catch (e) {
+                console.error("Gelen yanıt JSON değil:", textResponse);
+                throw new Error("Sunucudan geçersiz yanıt geldi.");
+            }
+            
+            loadingDiv.remove();
+
+            if (data.success) {
+                appendMessage('bot', data.reply);
+                chatHistory.push({ role: "user", content: message });
+                chatHistory.push({ role: "model", content: data.reply });
+                if(chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+            } else {
+                const errorMsg = data.reply || data.error || 'Bilinmeyen bir hata.';
+                appendMessage('bot', '⚠️ ' + errorMsg);
+                console.error("API Detay:", data);
+            }
+
+        } catch (error) {
+            loadingDiv.remove();
+            appendMessage('bot', '⚠️ Bağlantı hatası: ' + error.message);
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DijitalRaf | Admin Paneli</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #faf7f0;
+            --wood-dark: #3e2723;
+            --wood-light: #5d4037;
+            --text-main: #2c1e1a;
+            --text-muted: #795548;
+            --accent: #ffb300;
+            --success: #2e7d32;
+            --danger: #c62828;
+            --warning: #ff9800;
+            --shadow-soft: 0 10px 30px rgba(62, 39, 35, 0.1);
+            --shadow-hard: 0 10px 20px rgba(62, 39, 35, 0.25);
+            --sidebar-width: 250px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--wood-dark); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; cursor: pointer; }
+        ul { list-style: none; }
+
+        .btn {
+            padding: 10px 24px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            border: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background-color: var(--wood-dark); color: #fff; }
+        .btn-primary:hover { background-color: var(--wood-light); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--wood-dark); color: var(--wood-dark); }
+        .btn-outline:hover { background: var(--wood-dark); color: #fff; }
+        .btn-accent { background-color: var(--accent); color: var(--wood-dark); }
+        .btn-accent:hover { background-color: #ffca28; }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--wood-dark);
+            color: #f4ecd8;
+            padding: 30px 20px;
+            position: fixed; 
+            height: 100%; 
+            left: 0; 
+            top: 0;
+            display: flex; 
+            flex-direction: column;
+            z-index: 1000;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .admin-logo {
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.8rem; 
+            font-weight: 700;
+            margin-bottom: 40px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            color: var(--accent);
+        }
+
+        .menu-item {
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            color: rgba(255,255,255,0.7); 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        .menu-item:hover, .menu-item.active { 
+            background-color: rgba(255,255,255,0.1); 
+            color: #fff; 
+            transform: translateX(5px);
+        }
+        .menu-item i { width: 20px; text-align: center; }
+
+        .logout-link { 
+            margin-top: auto; 
+            color: #ff8a80; 
+        }
+        .logout-link:hover {
+            background-color: rgba(255,138,128,0.1);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width); 
+            flex: 1; 
+            padding: 40px;
+        }
+
+        .header-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 40px; 
+        }
+        .page-title { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.5rem; 
+            color: var(--wood-dark); 
+            margin-bottom: 10px;
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 40px; 
+        }
+        .stat-card {
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 10px; 
+            box-shadow: var(--shadow-soft);
+            border-bottom: 4px solid var(--wood-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hard);
+        }
+        .stat-number { 
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            color: var(--wood-dark); 
+            display: block; 
+        }
+        .stat-label { 
+            color: var(--text-muted); 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .table-container {
+            background: #fff; 
+            border-radius: 10px; 
+            padding: 25px; 
+            box-shadow: var(--shadow-soft); 
+            margin-bottom: 40px; 
+            transition: all 0.3s ease;
+        }
+        .table-container:hover {
+            box-shadow: var(--shadow-hard);
+        }
+        .table-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid rgba(62,39,35,0.1);
+            padding-bottom: 15px;
+        }
+        .section-h3 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.5rem; 
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            text-align: left; 
+            padding: 15px; 
+            color: var(--text-muted); 
+            border-bottom: 2px solid #eee; 
+            font-size: 0.9rem; 
+            font-weight: 700;
+        }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td {
+            background-color: rgba(250, 247, 240, 0.5);
+        }
+        
+        .book-thumb { 
+            width: 40px; 
+            height: 60px; 
+            object-fit: cover; 
+            border-radius: 4px; 
+            box-shadow: var(--shadow-soft);
+        }
+        .user-avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: var(--wood-dark); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            color: #fff; 
+        }
+        
+        .status-dot { 
+            height: 10px; 
+            width: 10px; 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin-right: 5px; 
+        }
+        .dot-green { background: var(--success); }
+        .dot-red { background: var(--danger); }
+
+        .action-btn {
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 0.85rem; 
+            margin-right: 5px; 
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-edit { background: #e3f2fd; color: #1565c0; }
+        .btn-edit:hover { background: #1565c0; color: #fff; }
+        .btn-delete { background: #ffebee; color: #c62828; }
+        .btn-delete:hover { background: #c62828; color: #fff; }
+        .btn-add { 
+            background: var(--wood-dark); 
+            color: #fff; 
+            padding: 10px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .btn-add:hover { 
+            background: var(--accent); 
+            color: var(--wood-dark); 
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning { 
+            background: #fff3e0; 
+            color: var(--warning); 
+            border: 1px solid var(--warning); 
+            font-weight: bold; 
+        }
+        .btn-warning:hover { 
+            background: var(--warning); 
+            color: #fff; 
+        }
+
+        .return-action { 
+            color: var(--success); 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-right: 10px; 
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .return-action:hover { 
+            color: var(--wood-dark);
+            transform: translateX(3px);
+        }
+
+        .modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(44, 30, 26, 0.85); 
+            backdrop-filter: blur(5px); 
+            z-index: 2000;
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            opacity: 0; 
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.active { 
+            opacity: 1; 
+        }
+
+        .modal-container {
+            background: #fff; 
+            width: 90%; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            display: flex;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); 
+            position: relative; 
+            transform: scale(0.9); 
+            transition: transform 0.3s;
+            max-height: 90vh; 
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-container { 
+            transform: scale(1); 
+        }
+        
+        .modal-lg { max-width: 900px; }
+        .modal-md { max-width: 600px; } 
+        
+        .close-modal-btn {
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            font-size: 1.5rem; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            z-index: 10;
+            transition: 0.3s;
+        }
+        .close-modal-btn:hover {
+            color: var(--wood-dark);
+            transform: scale(1.1);
+        }
+
+        .modal-header { 
+            background: var(--wood-dark); 
+            padding: 20px; 
+            color: #fff; 
+            text-align: center; 
+        }
+        .modal-body { 
+            padding: 30px; 
+            width: 100%;
+        }
+
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+            color: var(--wood-dark);
+        }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-family: 'Lato', sans-serif;
+            transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--wood-dark);
+            box-shadow: 0 0 0 2px rgba(62, 39, 35, 0.1);
+        }
+
+        .char-counter {
+            font-size: 0.8rem;
+            text-align: right;
+            margin-top: 5px;
+            color: var(--text-muted);
+        }
+        .char-counter.warning {
+            color: var(--warning);
+        }
+        .char-counter.danger {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .toast-container { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            z-index: 3000; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        .toast {
+            background: #fff; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            border-left: 5px solid; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { 
+                width: 60px; 
+                padding: 20px 10px; 
+            }
+            .menu-text, .admin-logo span { 
+                display: none; 
+            }
+            .main-content { 
+                margin-left: 60px; 
+                padding: 20px; 
+            }
+            .admin-logo { 
+                justify-content: center; 
+            }
+            .menu-item { 
+                justify-content: center; 
+                padding: 15px 0; 
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .modal-md {
+                max-width: 95%;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav class="sidebar">
+        <a href="index.html" class="admin-logo">
+            <i class="fas fa-book-open"></i> <span>DijitalRaf.</span>
+        </a>
+        
+        <div class="menu-item active" onclick="switchTab('dashboard', this)">
+            <i class="fas fa-th-large"></i> <span class="menu-text">Pano</span>
+        </div>
+        <div class="menu-item" onclick="switchTab('rentals', this)">
+            <i class="fas fa-clipboard-list"></i> <span class="menu-text">Kiralamalar</span>
+        </div>
+        <div class="menu-item" onclick="switchTab('books', this)">
+            <i class="fas fa-book"></i> <span class="menu-text">Kitap Envanteri</span>
+        </div>
+
+        <div class="menu-item logout-link" onclick="window.location.href='index.html'">
+            <i class="fas fa-sign-out-alt"></i> <span class="menu-text">Çıkış Yap</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <div class="header-row">
+            <div>
+                <h1 class="page-title">Admin Paneli</h1>
+                <p style="color: var(--text-muted);">Hoşgeldin, Admin. Bugün kütüphane oldukça sakin.</p>
+            </div>
+            <div style="text-align: right;">
+                <span id="current-date" style="font-weight: bold; display: block; color: var(--wood-dark);"></span>
+                <span style="font-size: 0.9rem; color: var(--accent);">Sistem Durumu: <strong>Aktif</strong></span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="totalBooks">0</span>
+                <span class="stat-label">Toplam Kitap</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="activeRentals">0</span>
+                <span class="stat-label">Aktif Kiralama</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" style="color: var(--danger);" id="lateReturns">0</span>
+                <span class="stat-label">Gecikmiş İade</span>
+            </div>
+                <span class="stat-number" id="totalMembers">0</span>
+        </div>
+
+        <div class="table-container" id="rentalsSection">
+            <div class="table-header">
+                <h3 class="section-h3">Kiralamalar</h3>
+                <button class="btn btn-outline" id="rentalsToggleBtn" onclick="toggleRentals()">
+                    <i class="fas fa-eye"></i> Tümünü Gör
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Üye</th>
+                        <th>Kitap</th>
+                        <th>Kiralama Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="rentalTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="table-container" id="booksSection">
+            <div class="table-header">
+                <h3 class="section-h3">Kitap Envanteri</h3>
+                <button class="btn btn-primary" onclick="openModal('addBookModal')">
+                    <i class="fas fa-plus"></i> Yeni Kitap Ekle
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kapak</th>
+                        <th>Kitap Adı</th>
+                        <th>Yazar</th>
+                        <th>Kategori</th>
+                        <th>Stok</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="bookTableBody"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <div class="modal-overlay" id="addBookModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('addBookModal')">&times;</span>
+            <div class="modal-header">
+                <h3>Kütüphaneye Kitap Ekle</h3>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="addNewBook(event)">
+                    <div class="form-group">
+                        <label>Kitap Adı</label>
+                        <input type="text" id="addTitle" required placeholder="Örn: Sefiller">
+                    </div>
+                    <div class="form-group">
+                        <label>Yazar</label>
+                        <input type="text" id="addAuthor" required placeholder="Örn: Victor Hugo">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="addCategory">
+                            <option>Roman</option>
+                            <option>Tarih</option>
+                            <option>Bilim</option>
+                            <option>Felsefe</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Açıklama</label>
+                        <textarea id="addDescription" placeholder="Kitap açıklaması" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stok Adedi</label>
+                        <input type="number" id="addStock" required min="0" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Kapak Resmi (URL)</label>
+                        <input type="text" id="addCover" placeholder="https://example.com/kitap.jpg">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-save"></i> Kaydet ve Yayınla
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editBookModal">
+        <div class="modal-container modal-md">
+            <span class="close-modal-btn" onclick="closeModal('editBookModal')">&times;</span>
+            <div class="modal-header">
+                <h3>Kitabı Düzenle</h3>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="saveEditBook(event)">
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label>Kitap Adı</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Yazar</label>
+                        <input type="text" id="editAuthor" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="editCategory">
+                            <option>Roman</option>
+                            <option>Tarih</option>
+                            <option>Bilim</option>
+                            <option>Felsefe</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Açıklama</label>
+                        <textarea id="editDescription" placeholder="Kitap açıklaması" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                    </div>
+                    <div class="form-group">
+                        <label>Stok Adedi</label>
+                        <input type="number" id="editStock" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Kapak Resmi (URL)</label>
+                        <input type="text" id="editCover" placeholder="https://example.com/kitap.jpg">
+                    </div>
+                    <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-edit"></i> Değişiklikleri Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    
+        async function getBooksFromAPI() {
+            try {
+                const response = await fetch('api/books.php');
+                return await response.json();
+            } catch (error) {
+                console.error('Kitaplar yüklenirken hata:', error);
+                return [];
+            }
+        }
+
+        async function getRentalsFromAPI() {
+            try {
+                const response = await fetch('api/admin_rentals.php');
+                return await response.json();
+            } catch (error) {
+                console.error('Kiralamalar yüklenirken hata:', error);
+                return [];
+            }
+        }
+
+        async function addBookToAPI(bookData) {
+            try {
+                const response = await fetch('api/admin_add_book.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Kitap eklenirken hata:', error);
+                return { success: false, message: 'Sunucu hatası' };
+            }
+        }
+
+        async function updateBookInAPI(bookData) {
+            try {
+                const response = await fetch('api/admin_edit_book.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Kitap güncellenirken hata:', error);
+                return { success: false, message: 'Sunucu hatası' };
+            }
+        }
+
+        async function deleteBookFromAPI(bookId) {
+            try {
+                const response = await fetch('api/admin_delete_book.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: bookId })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Kitap silinirken hata:', error);
+                return { success: false, message: 'Sunucu hatası' };
+            }
+        }
+
+        async function returnBookAPI(rentalId) {
+            try {
+                const response = await fetch('api/admin_return_book.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ rental_id: rentalId })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('İade işlemi hatası:', error);
+                return { success: false, message: 'Sunucu hatası' };
+            }
+        }
+
+      
+        async function updateStats() {
+            const books = await getBooksFromAPI();
+            const rentals = await getRentalsFromAPI();
+            const members = await getMembersFromAPI();
+            
+            const totalBooks = books.length;
+            const activeRentals = rentals.filter(r => r.durum === 'active').length;
+            const totalMembers = members.length;
+            
+            document.getElementById('totalBooks').textContent = totalBooks;
+            document.getElementById('activeRentals').textContent = activeRentals;
+            document.getElementById('totalMembers').textContent = totalMembers;
+            document.getElementById('lateReturns').textContent = '0';
+        }
+
+        async function renderRentals() {
+            const tbody = document.getElementById('rentalTableBody');
+            tbody.innerHTML = "<tr><td colspan='5'>Yükleniyor...</td></tr>";
+            
+            const rentals = await getRentalsFromAPI();
+            const dataToShow = isRentalsExpanded ? rentals : rentals.slice(0, 5);
+
+            tbody.innerHTML = '';
+            
+            dataToShow.forEach((rental) => {
+                const statusHtml = rental.durum === 'active' 
+                    ? `<span style="color:var(--success);"><i class="fas fa-check-circle"></i> Aktif</span>` 
+                    : `<span style="color:var(--danger);"><i class="fas fa-times-circle"></i> İade Edildi</span>`;
+
+                const returnButton = rental.durum === 'active' 
+                    ? `<span class="return-action" onclick="returnBook(${rental.id})"><i class="fas fa-undo"></i> İade Al</span>`
+                    : '<span style="color:#999;">Tamamlandı</span>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${rental.ad_soyad}</strong></td>
+                    <td>${rental.kitap_adi || 'Kitap Bilgisi Yok'}</td>
+                    <td>${new Date(rental.kiralama_tarihi).toLocaleDateString('tr-TR')}</td>
+                    <td>${statusHtml}</td>
+                    <td>${returnButton}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (dataToShow.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">Henüz kiralama kaydı bulunmuyor</td></tr>';
+            }
+        }
+
+        async function renderBooks() {
+            const tbody = document.getElementById('bookTableBody');
+            tbody.innerHTML = "<tr><td colspan='6'>Yükleniyor...</td></tr>";
+            
+            const books = await getBooksFromAPI();
+
+            tbody.innerHTML = '';
+            
+            books.forEach((book) => {
+                const stockStatus = book.stok > 0 
+                    ? `<span class="status-dot dot-green"></span> ${book.stok} Adet` 
+                    : `<span class="status-dot dot-red"></span> Tükendi`;
+
+                const coverImg = book.kapak_resmi && book.kapak_resmi.length > 5 
+                    ? book.kapak_resmi 
+                    : "https://via.placeholder.com/100x150?text=No+Cover";
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${coverImg}" class="book-thumb" alt="${book.baslik}"></td>
+                    <td><strong>${book.baslik}</strong></td>
+                    <td>${book.yazar}</td>
+                    <td><span style="background:#eee; padding:4px 8px; border-radius:4px; font-size:0.8rem;">${book.kategori}</span></td>
+                    <td>${stockStatus}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="openEditModal(${book.id}, '${book.baslik}', '${book.yazar}', '${book.kategori}', ${book.stok}, '${book.aciklama || ''}', '${book.ozet || ''}', '${book.kapak_resmi || ''}')">
+                            <i class="fas fa-pen"></i> Düzenle
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteBook(${book.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function getMembersFromAPI() {
+            try {
+                const response = await fetch('api/admin_members.php');
+                return await response.json();
+            } catch (error) {
+                console.error('Üyeler yüklenirken hata:', error);
+                return [];
+            }
+        }
+
+
+        async function addNewBook(e) {
+            e.preventDefault();
+            
+            const bookData = {
+                baslik: document.getElementById('addTitle').value,
+                yazar: document.getElementById('addAuthor').value,
+                kategori: document.getElementById('addCategory').value,
+                aciklama: document.getElementById('addDescription').value,
+                stok: parseInt(document.getElementById('addStock').value),
+                kapak_resmi: document.getElementById('addCover').value
+            };
+
+            const result = await addBookToAPI(bookData);
+            
+            if (result.success) {
+                closeModal('addBookModal');
+                showToast("Yeni kitap başarıyla eklendi.");
+                
+                document.getElementById('addTitle').value = "";
+                document.getElementById('addAuthor').value = "";
+                document.getElementById('addDescription').value = "";
+                document.getElementById('addSummary').value = "";
+                document.getElementById('addCover').value = "";
+                document.getElementById('addSummaryCounter').textContent = "0/500";
+                
+                await renderBooks();
+                await updateStats();
+            } else {
+                showToast(result.message || "Kitap eklenirken hata oluştu.", "error");
+            }
+        }
+
+        function openEditModal(id, title, author, category, stock, description, summary, cover) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editAuthor').value = author;
+            document.getElementById('editCategory').value = category;
+            document.getElementById('editStock').value = stock;
+            document.getElementById('editDescription').value = description || '';
+            document.getElementById('editCover').value = cover || '';
+            
+            
+            openModal('editBookModal');
+        }
+
+        async function saveEditBook(e) {
+            e.preventDefault();
+            
+            const bookData = {
+                id: document.getElementById('editId').value,
+                baslik: document.getElementById('editTitle').value,
+                yazar: document.getElementById('editAuthor').value,
+                kategori: document.getElementById('editCategory').value,
+                aciklama: document.getElementById('editDescription').value,
+                stok: parseInt(document.getElementById('editStock').value),
+                kapak_resmi: document.getElementById('editCover').value || ''
+            };
+
+            const result = await updateBookInAPI(bookData);
+            
+            if (result.success) {
+                closeModal('editBookModal');
+                showToast("Kitap bilgileri güncellendi.");
+                await renderBooks();
+                await updateStats();
+            } else {
+                showToast(result.message || "Kitap güncellenirken hata oluştu.", "error");
+            }
+        }
+
+        async function deleteBook(bookId) {
+            if(confirm("Bu kitabı envanterden silmek istiyor musunuz?")) {
+                const result = await deleteBookFromAPI(bookId);
+                
+                if (result.success) {
+                    showToast("Kitap silindi.");
+                    await renderBooks();
+                    await updateStats();
+                } else {
+                    showToast(result.message || "Kitap silinirken hata oluştu.", "error");
+                }
+            }
+        }
+
+        async function returnBook(rentalId) {
+            if(confirm("Kitap fiziksel olarak teslim alındı mı?")) {
+                const result = await returnBookAPI(rentalId);
+                
+                if (result.success) {
+                    showToast("İade işlemi onaylandı. Stok güncellendi.");
+                    await renderRentals();
+                    await renderBooks();
+                    await updateStats();
+                } else {
+                    showToast(result.message || "İade işlemi sırasında hata oluştu.", "error");
+                }
+            }
+        }
+
+
+        let isRentalsExpanded = false;
+
+        function toggleRentals() {
+            isRentalsExpanded = !isRentalsExpanded;
+            const btn = document.getElementById('rentalsToggleBtn');
+            
+            if(isRentalsExpanded) {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Daha Az Göster';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye"></i> Tümünü Gör';
+            }
+            renderRentals();
+        }
+
+        function switchTab(tabName, element) {
+            if(element) {
+                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
+            
+            if(tabName === 'dashboard') window.scrollTo({top:0, behavior: 'smooth'});
+            if(tabName === 'books') document.getElementById('booksSection').scrollIntoView({behavior: 'smooth'});
+            if(tabName === 'rentals') document.getElementById('rentalsSection').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.style.display = 'flex';
+            setTimeout(() => el.classList.add('active'), 10);
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('active');
+            setTimeout(() => el.style.display = 'none', 300);
+        }
+        
+        window.onclick = (e) => {
+            if(e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+        }
+
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeftColor = type === "success" ? 'var(--success)' : 'var(--danger)';
+            toast.innerHTML = `
+                <i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}" 
+                   style="color:${type === "success" ? "var(--success)" : "var(--danger)"}; font-size:1.5rem;"></i>
+                <div><h4>${type === "success" ? "Başarılı" : "Hata"}</h4><p>${msg}</p></div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function updateDate() {
+            const dateElement = document.getElementById('current-date');
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            dateElement.innerText = now.toLocaleDateString('tr-TR', options);
+        }
+
+        function updateCharCounter(textareaId, counterId) {
+            const textarea = document.getElementById(textareaId);
+            const counter = document.getElementById(counterId);
+            
+            if (textarea && counter) {
+                const length = textarea.value.length;
+                const maxLength = textarea.maxLength;
+                
+                counter.textContent = `${length}/${maxLength}`;
+                
+                counter.classList.remove('warning', 'danger');
+                if (length > maxLength * 0.8 && length < maxLength) {
+                    counter.classList.add('warning');
+                } else if (length >= maxLength) {
+                    counter.classList.add('danger');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateDate();
+            await updateStats();
+            await renderRentals();
+            await renderBooks();
+            
+
+            document.getElementById('addSummary').addEventListener('input', function() {
+                updateCharCounter('addSummary', 'addSummaryCounter');
+            });
+            
+        
+        });
+
+    </script>
+</body>
+</html>

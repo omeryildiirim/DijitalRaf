@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ağ Güvenliği Test Araçları - Poster</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Genel Ayarlar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #020c1b;
+            font-family: 'Lato', sans-serif;
+            color: #ccd6f6;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Poster Konteyneri (A3/A4 Oranına Yakın) */
+        .poster-container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #0a192f;
+            border-top: 15px solid #64ffda;
+            border-bottom: 15px solid #64ffda;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Arka Plan Deseni */
+        .poster-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 50% 50%, rgba(100, 255, 218, 0.03) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .poster-container > * { position: relative; z-index: 1; }
+
+        /* Başlık Bölümü (Header) */
+        .poster-header {
+            text-align: center;
+            border-bottom: 2px solid #233554;
+            padding-bottom: 30px;
+        }
+
+        .poster-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 65px;
+            font-weight: 800;
+            color: #e6f1ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .poster-header h1 span { color: #64ffda; }
+        
+        .poster-header .subtitle {
+            font-size: 26px;
+            color: #8892b0;
+            font-weight: 600;
+        }
+
+        .poster-header .author-badge {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: rgba(100, 255, 218, 0.1);
+            border: 1px solid #64ffda;
+            border-radius: 30px;
+            font-size: 20px;
+            color: #64ffda;
+            font-weight: 700;
+        }
+
+        /* Ana Grid Düzeni */
+        .poster-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Sol Sütun ve Sağ Sütun */
+            gap: 40px;
+        }
+
+        /* Bölüm Başlıkları */
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            color: #64ffda;
+            border-left: 5px solid #64ffda;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Sol Sütun Kartları */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-card {
+            background-color: #112240;
+            border: 1px solid #233554;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .info-card p, .info-card li {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #8892b0;
+        }
+
+        .info-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .info-card li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .info-card li::before {
+            content: '\f0da'; /* FontAwesome play/triangle icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #64ffda;
+        }
+
+        /* Sağ Sütun - Araçlar Grid'i */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .tool-card {
+            background: linear-gradient(145deg, #112240 0%, #0a192f 100%);
+            border: 1px solid #233554;
+            border-radius: 12px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.1);
+            border-color: #64ffda;
+        }
+
+        .tool-card .icon {
+            font-size: 40px;
+            color: #64ffda;
+            margin-bottom: 15px;
+        }
+
+        .tool-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 26px;
+            color: #e6f1ff;
+            margin-bottom: 10px;
+        }
+
+        .tool-card h4 {
+            font-size: 16px;
+            color: #64ffda;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .tool-card p {
+            font-size: 17px;
+            color: #8892b0;
+            line-height: 1.5;
+        }
+
+        /* Etik Uyarı Bölümü */
+        .ethics-banner {
+            background-color: rgba(255, 80, 80, 0.1);
+            border: 2px dashed #ff5050;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .ethics-banner h4 {
+            color: #ff5050;
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .ethics-banner p { color: #ccd6f6; font-size: 18px; }
+
+        /* Alt Bilgi (Footer) */
+        .poster-footer {
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 2px solid #233554;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .poster-footer .thanks {
+            font-family: 'Poppins', sans-serif;
+            font-size: 40px;
+            color: #64ffda;
+            font-weight: 700;
+        }
+
+        .poster-footer .course-info {
+            font-size: 18px;
+            color: #8892b0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive Ayarlar */
+        @media (max-width: 900px) {
+            .poster-grid { grid-template-columns: 1fr; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .poster-header h1 { font-size: 45px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="poster-container">
+        
+        <!-- BAŞLIK BÖLÜMÜ -->
+        <header class="poster-header">
+            <p class="subtitle">Bilgisayar Ağları Dersi Sunum Posteri</p>
+            <h1>Ağ Güvenliği <br><span>Test Araçları</span></h1>
+            <div class="author-badge">
+                <i class="fa-solid fa-user-graduate"></i> Hazırlayan: Barış Aydın
+            </div>
+        </header>
+
+        <!-- İÇERİK BÖLÜMÜ -->
+        <main class="poster-grid">
+            
+            <!-- Sol Sütun: Temel Bilgiler -->
+            <div class="side-panel">
+                <div class="info-card">
+                    <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> Güvenlik Testi Nedir?</h2>
+                    <p>Bilişim sistemlerindeki mimari zafiyetleri, açık kapıları (backdoor) ve yapılandırma hatalarını, kötü niyetli saldırganlardan önce bulmak amacıyla yapılan kontrollü test sürecidir.</p>
+                </div>
+
+                <div class="info-card">
+                    <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> Test Aşamaları</h2>
+                    <ul>
+                        <li><b>Keşif (Reconnaissance):</b> Hedef sistemin haritasının çıkarılması, aktif cihazların ve servislerin tespiti.</li>
+                        <li><b>Zafiyet Analizi:</b> Tespit edilen servislerdeki bilinen açıkların (CVE) aranması.</li>
+                        <li><b>Sömürü (Exploitation):</b> Bulunan açıkların sisteme sızmak için kullanılması ve doğrulanması.</li>
+                        <li><b>Raporlama:</b> Risklerin ve çözüm önerilerinin belgelenmesi.</li>
+                    </ul>
+                </div>
+
+               
+            </div>
+
+            <!-- Sağ Sütun: Araçlar -->
+            <div>
+                <h2 class="section-title"><i class="fa-solid fa-toolbox"></i> Endüstri Standardı 4 Temel Araç</h2>
+                <div class="tools-grid">
+                    
+                    <!-- Nmap -->
+                    <div class="tool-card">
+                        <div class="icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <h3>Nmap</h3>
+                        <h4>Bilgi Toplama & Keşif</h4>
+                        <p>Ağın haritacısıdır. Hedef ağdaki açık portları, aktif cihazları, çalışan servisleri ve işletim sistemlerini tespit etmek için kullanılır. Sızma testlerinin ilk adımıdır.</p>
+                    </div>
+
+                    <!-- Wireshark -->
+                    <div class="tool-card">
+                        <div class="icon"><i class="fa-solid fa-wave-square"></i></div>
+                        <h3>Wireshark</h3>
+                        <h4>Paket (Trafik) Analizi</h4>
+                        <p>Ağın "röntgen" cihazıdır. Ağ üzerinden geçen veri paketlerini anlık olarak yakalar. Sorun giderme, protokol analizi ve şifrelenmemiş veri sızıntılarını izlemek için kullanılır.</p>
+                    </div>
+
+                    <!-- Nessus -->
+                    <div class="tool-card">
+                        <div class="icon"><i class="fa-solid fa-microscope"></i></div>
+                        <h3>Nessus</h3>
+                        <h4>Zafiyet Taraması</h4>
+                        <p>Kurumsal ağlardaki yanlış yapılandırmaları, güncel olmayan yazılımları ve varsayılan zayıf şifreleri otomatik olarak bulur, risk seviyesine göre önceliklendirip raporlar.</p>
+                    </div>
+
+                    <!-- Metasploit -->
+                    <div class="tool-card">
+                        <div class="icon"><i class="fa-solid fa-biohazard"></i></div>
+                        <h3>Metasploit</h3>
+                        <h4>Sömürü (Exploitation)</h4>
+                        <p>Dünyanın en büyük istismar veritabanıdır. Tespit edilen bir güvenlik açığının gerçekten kullanılıp sisteme yetkisiz erişim sağlayıp sağlamadığını kanıtlamak için kullanılır.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+       
+
+    </div>
+
+</body>
+</html>
